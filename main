@@ -1,0 +1,209 @@
+//------------------------------------librerias-----------------------------------------------------------
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdbool.h>
+//------------------------------------funciones-----------------------------------------------------------
+void jugar();
+void explicación();
+void facil(char nombre[20]); 
+void medio(char nombre[20]);
+void dificil(char nombre[20]);
+void puntuacion();
+void archivos();
+//------------------------------------main-----------------------------------------------------------
+int main(){
+    int eleccion;
+    archivos();
+    system("clear");
+    do
+    {
+        printf("AHORCADO\n");
+        printf("1. Nueva partida\n");
+        printf("2. Puntuación\n");
+        printf("3. Cómo jugar\n");
+        printf("4. Salir\n");
+        printf("Ingrese opción: ");
+        scanf("%d", &eleccion);
+        switch (eleccion)
+        {
+            case 1:
+                jugar();
+                break;
+            case 2:
+                puntuacion();
+                break;
+            case 3:
+                explicación();
+                break;
+            case 4:
+                printf("¡Hasta pronto!");
+                break;
+            default:
+                system("clear");
+                printf("Ingrese opción valida.\n");
+                break;
+        }
+    } while (eleccion != 4);
+    return 0;
+}
+//------------------------------------funciones_desarrolladas-----------------------------------------------------------
+//__________Interfaz principal_______________
+void jugar(){
+    system("clear");
+    bool salir = false;
+    int eleccion;
+    char nombre[20];
+    printf("Ingrese nombre del jugador: ");
+    scanf("%s", nombre);
+    do  //elección de dificultad
+    {
+        printf("Dificultad: \n");
+        printf("1. Facil: de 4 a 5 letras.\n");
+        printf("2. Medio: de 6 a 9 letras.\n");
+        printf("3. Dificil: de 10 a 13 letras.\n");
+        printf("Seleccione dificultad: ");
+        scanf("%d", &eleccion);
+        switch (eleccion)
+        {
+        case 1:
+            facil(nombre);
+            salir = true;
+            break;
+        case 2:
+            medio(nombre);
+            salir = true;
+            break;
+        case 3:
+            dificil(nombre);
+            salir = true;
+            break;
+        default:
+            system("clear");
+            printf("Opción no valida.\n");
+            break;
+        }
+        
+    } while (salir != true);
+    system("clear");
+}
+void explicación(){
+    system("clear");
+    int salir;
+    do
+    {
+        printf("1. ¿Cómo jugar al ahorcado?\n");
+        printf("2. ¿Cómo es el sistema de puntos?\n");
+        printf("3. Volver a pantalla de incio.\n");
+        printf("Seleccione opción: ");
+        scanf("%d", &salir);
+        switch (salir)
+        {
+        case 1:
+            system("clear");
+            printf("La premisa es sencilla. Debes de adivinar la palabra ingresando letra a letra (pueden repetirse letras y no se toman en cuenta los acentos),\n");
+            printf("¡pero atención! que si te equivocas se va a ir formando un dibujo simulando las oportunidades\n");
+            printf("que tienes. Son un total de 6 oportunidades de adivinar la palabra, si ves este dibujo, ¡se acabo el juego!\n");
+            printf("___\n");
+            printf("|       O\n");
+            printf("|      /|\\\n");
+            printf("|      / \\\n");
+            printf("|\n");
+            printf("\n");
+            break;
+        case 2:
+            system("clear");
+            printf("¡La forma de conseguir puntos es sencilla!, pero atención la forma de puntaje cambia según la dificultad del juego.\n");
+            printf("Facil:\n");
+            printf("-Por cada letra que adivines se va a sumar un +1\n");
+            printf("-Si adivinas la palabra sin errores +5\n");
+            printf("-Si adivinas la palabra en menos de 15 segundos +10\n");
+            printf("\n");
+            printf("Medio:\n");
+            printf("-Por cada letra que adivines se va a sumar un +1\n");
+            printf("-Si adivinas la palabra sin errores +12\n");
+            printf("-Si adivinas la palabra en menos de 30 segundos +15\n");
+            printf("\n");
+            printf("Dificil:\n");
+            printf("-Por cada letra que adivines se va a sumar un +1\n");
+            printf("-Si adivinas la palabra sin errores +30\n");
+            printf("-Si adivinas la palabra en menos de 50 segundos +25\n");
+            printf("\n");
+            break;
+        default:
+            system("clear");
+            printf("seleccione una opción valida.\n");
+            break;
+        }
+    } while (salir != 3);
+    system("clear");
+}
+void puntuacion(){
+    system("clear");
+    printf("Funciona eleccion 2\n");
+    system("clear");
+}
+//________dificultades_________________
+void facil(char nombre[20]){
+    system("clear");
+    int seg = 3;
+    printf("Funciona dificultad facil\n");
+    while (seg > 0) //cuenta regresiva para que el jugador se prepare
+    {
+        printf("%d\n", seg);
+        seg--;
+        sleep(1);
+    }
+    system("clear");
+}
+void medio(char nombre[20]){
+    system("clear");
+    int seg = 3;
+    printf("Funciona dificultad media\n");
+    while (seg > 0) //cuenta regresiva para que el jugador se prepare
+    {
+        printf("%d\n", seg);
+        seg--;
+        sleep(1);
+    }
+    system("clear");
+}
+void dificil(char nombre[20]){
+    system("clear");
+    int seg = 3;
+    printf("Funciona dificultad dificil\n");
+    while (seg > 0) //cuenta regresiva para que el jugador se prepare
+    {
+        printf("%d\n", seg);
+        seg--;
+        sleep(1);
+    }
+    system("clear");
+}
+//________________Creación archivos_____________
+void archivos(){
+    FILE *archivo = fopen("palabras.dat", "w");
+    if (archivo == NULL)
+    {
+        printf("Problema al abrir archivo palabras.");
+        return;
+    }
+    char faciles[35][6] = {"rueda", "silla", "lago", "hoja", "gato", "perro", "nevar", "nieve", "cable", "raton", "lapiz", "union", "junio", "julio", "marzo", "poste", "cielo", "tren", "brazo", "reloj", "calor", "frio", "barco", "pecho", "torax", "lente", "enero", "negro", "cobre", "llave", "flor", "azul", "arbol", "arena", "hongo"};
+    char medias[35][10] = {"ventana", "zapatos", "almohada", "montaña", "paraguas", "escuela", "facultad", "estudioso", "mariposa", "basura", "celular",  "teclado", "pantalla", "febrero", "diciembre", "agosto", "octubre", "viernes", "miercoles", "episodio", "explorar", "corazon", "mermelada", "amarillo", "camello", "caballo", "hormiga", "campera", "regalo", "cabello", "guitarra", "parlante", "reciclar", "automovil", "merienda"};
+    char dificiles[35][14] = {"motocicleta", "caramelizado", "circulacion", "computadora", "ventilador", "fraccionar", "helicoptero", "electricidad", "zanahorias", "navegantes", "dinosaurio", "abecedario", "cardiologo", "celebridad", "decoracion", "desfribilador", "abarcamiento", "acondicionar", "actualizacion", "aglutinacion", "alcantarilla", "bibliografia", "bicentenario", "cascarrabias", "correlativo", "demostracion", "desmayarse", "accesibilidad", "autenticacion", "cartilaginoso", "contribuyente", "criptografico", "desaparicion", "incompetente", "incorruptible"};
+    //facil: 1 a 35, medias: 36 a 70, dificil: 71 a 105
+    for (int i = 0; i < 35; i++)
+    {
+        fprintf(archivo, "%d. %s\n", i + 1, faciles[i]);
+    }
+    for (int i = 0; i < 35; i++)
+    {
+        fprintf(archivo, "%d. %s\n", i + 36, medias[i]);
+    }
+    for (int i = 0; i < 35; i++)
+    {
+        fprintf(archivo, "%d. %s\n", i + 71, dificiles[i]);
+    }
+    fclose(archivo);
+}
