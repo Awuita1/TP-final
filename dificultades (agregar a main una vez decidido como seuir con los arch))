@@ -1,0 +1,99 @@
+#include<stdio.h>
+#include<time.h>
+
+int menu();
+
+void generar();
+
+void sobreescribir();
+
+int main() {
+
+    menu();
+
+    return 0;
+}
+
+int menu(){
+    int ingreso;
+
+    printf("-1: Generar nuevo archivo\n-2: Sobreescribir un dato\n-3: Salir");
+    readln("d",ingreso);
+    switch  (ingreso){
+        case "1": 
+            generar();
+            break;
+        case "2": 
+            sobreescribir();
+            break;
+        case "3": 
+            exit;
+        default: 
+            printf("ERROR valor ingresado no reconocido");
+            menu();
+    }
+    menu();
+}
+
+void generar(){
+    int dificultad, cantidad = 35;
+    char palabra[50];
+
+    printf("selecciona la dificultad a la que quieres que se aplique el archivo\n-1: facil(4-5 letras)\n-2: normal(6-9 letras)\n-3: dificil(10-13 letras)");
+    readln("d",);
+    FILE *filePointer;
+    switch (dificultad){
+        case "1": {
+            filePointer = fopen("dFacil.bin","wb");
+            for (int i = 0; i < cantidad; i++){
+                redln("%s", palabra);
+                fwrite(&dFacil, sizeof(char) ,1 , filePointer);
+            }
+        }
+
+        case "2": {
+            filePointer = fopen("dNormal.bin","wb");
+            for (int i = 0; i < cantidad; i++){
+                redln("%s", palabra);
+                fwrite(&dNormal, sizeof(char) ,1 , filePointer);
+            }
+        }
+
+        case "3": {
+            filePointer = fopen("dDificil.bin","wb");
+            for (int i = 0; i < cantidad; i++){
+                redln("%s", palabra);
+                fwrite(&dDificil, sizeof(char) ,1 , filePointer);
+            }
+        }
+        default: {
+            pritnf("ERROR valor ingresado no reconocido");
+            generar();
+    }
+    }
+    fclose(filePointer);
+    printf("Archivo creado");
+}
+
+
+void sobreescribir(){
+    int tag, dificultad;
+    printf("\nPorfavor ingrese la dificultad que quiere modificar\n-1: Facil\n-2: Normal\n-3: Dificil\n");
+    readln("%d"dificultad);
+    FILE *filePointer;
+    switch(dificultad){
+        case "1": {
+            pritnf("porfavor ingrese el tag de la palabra que quiere sobreescribir\n");
+            readln("%d", tag);
+            fopen("dFacil","wb");
+            fseek(filePointer, tag, dFacil);
+            fwrite(&dFacil, sizeof(char), 1, filePointer);
+            printf("");
+        }
+    }
+    fclose(filePointer);
+
+
+    
+}
+    
