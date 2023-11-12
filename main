@@ -6,10 +6,10 @@
 #include <stdbool.h>
 #include <time.h>
 //------------------------------------funciones-----------------------------------------------------------
-void jugar();
+void Normal();
 void explicación();
 void puntuacion();
-int espacios();
+void espacios();
 int dificultad();
 //------------------------------------main-----------------------------------------------------------
 int main(){
@@ -22,7 +22,7 @@ int main(){
     do
     {   
         printf("AHORCADO\n");
-        printf("Bienvenido %s, elige una opcion: \n", nombre);
+        printf("Bienvenidx %s, elige una opcion: \n", nombre);
         printf("1. Nueva partida\n");
         printf("2. Puntuación\n");
         printf("3. Cómo jugar\n");
@@ -31,7 +31,7 @@ int main(){
         switch (eleccion)
         {
             case 1:
-                jugar();
+                Normal();
                 break;
             case 2:
                 puntuacion();
@@ -52,15 +52,16 @@ int main(){
 }
 //------------------------------------funciones_desarrolladas-----------------------------------------------------------
 //__________Interfaz principal_______________
-void jugar(){
+void Normal(){
 
 //------------------elección de dificultad------------------
-   dificultad();
+    int tag = dificultad();
 //------------------elección de dificultad------------------
 
 //------------------imprimir espacio vacios------------------
-
+    espacios(tag);
 //------------------imprimir espacio vacios------------------
+
 
 }
 void explicación(){
@@ -122,22 +123,29 @@ void puntuacion(){
 
 
 
-int espacios(tag){
+void espacios(int tag) {
     char palabra[50];
-
     FILE *filePointer;
-    filePointer = fopen("palabras.dat","rb");
-    
-    fseek (filePointer, tag, SEEK_SET);
-    fread (&palabra, sizeof(char), 1, filePointer);
+    filePointer = fopen("palabras.dat", "rb");
+
+    if (filePointer == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return;
+    }
+
+    fseek(filePointer, tag, SEEK_SET);
+    fread(&palabra, sizeof(palabra), 1, filePointer);
     printf("%s\n", palabra);
+    
+    fclose(filePointer);
 }
 
-int dificultad{
-    int dificultad() {
+//dificultad devuelve el tag de la palabra que se va a usar en el juego
+int dificultad() {
     bool salir = false;
     int eleccion, tag;
     system("cls");
+    //Escanea la eleccion del usuario y devuelva el tag de la palabra que se usara
     do
     {
         printf("Dificultad: \n");
@@ -165,9 +173,9 @@ int dificultad{
             printf("Opción no válida.\n");
             break;
         }
+    //fin de escaneo
     } while (salir != true);
 
     system("cls");
     return tag;
-}
 }
