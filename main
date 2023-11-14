@@ -7,10 +7,13 @@
 #include <time.h>
 //------------------------------------funciones-----------------------------------------------------------
 void Normal();
-void explicación();
+void explicacion();
 void puntuacion();
+char* ObtenerPalabra();
 void espacios();
 int dificultad();
+
+
 //------------------------------------main-----------------------------------------------------------
 int main(){
     int eleccion;
@@ -37,7 +40,7 @@ int main(){
                 puntuacion();
                 break;
             case 3:
-                explicación();
+                explicacion();
                 break;
             case 4:
                 printf("¡Hasta pronto!");
@@ -50,21 +53,31 @@ int main(){
     } while (eleccion != 4);
     return 0;
 }
+//------------------------------------main-----------------------------------------------------------
+
 //------------------------------------funciones_desarrolladas-----------------------------------------------------------
-//__________Interfaz principal_______________
 void Normal(){
 
 //------------------elección de dificultad------------------
     int tag = dificultad();
+    char* palabra = ObtenerPalabra(tag);
 //------------------elección de dificultad------------------
 
-//------------------imprimir espacio vacios------------------
-    espacios(tag);
-//------------------imprimir espacio vacios------------------
+    explicacion();
 
+//------------------imprimir espacio vacios y ahorcado(diego)------------------
+    //ahorcado(misses)
+    //Guess()
+    //cGuess()
+    espacios(palabra);
+//------------------imprimir espacio vacios y ahorcado(diego)------------------
 
+//------------------entrada de usuario, imprimir en los espacios en blanco------------------
+//------------------entrada de usuario, imprimir en los espacios en blanco------------------
 }
-void explicación(){
+
+//SUJETO A CAMBIOS
+void explicacion(){
     system("cls");
     int salir;
     do
@@ -115,32 +128,47 @@ void explicación(){
     } while (salir != 3);
     system("cls");
 }
+
+//SUJETO A CAMBIOS
 void puntuacion(){
     system("cls");
     printf("Funciona eleccion 2\n");
     system("cls");
 }
 
-
-
-void espacios(int tag) {
-    char palabra[50];
+//TERMINADO
+char* ObtenerPalabra(int tag) {
+    char *palabra = NULL;
+    size_t maxLength = 50;  // Longitud máxima de la palabra
+    palabra = (char*)malloc(maxLength * sizeof(char));
     FILE *filePointer;
-    filePointer = fopen("palabras.dat", "rb");
+    filePointer = fopen("Palabras.dat", "r");
 
     if (filePointer == NULL) {
         printf("Error al abrir el archivo.\n");
-        return;
+        Normal();
     }
 
-    fseek(filePointer, tag, SEEK_SET);
-    fread(&palabra, sizeof(palabra), 1, filePointer);
-    printf("%s\n", palabra);
-    
+    // Buscar la línea correspondiente al tag
+    for (int i = 0; i < tag; ++i) {
+        if (fgets(palabra, sizeof(palabra), filePointer) == NULL) {
+            printf("Error: No se encontró la palabra para el tag %d.\n", tag);
+            fclose(filePointer);
+            Normal();
+        }
+    }
+
+    // Eliminar el salto de línea al final de la palabra
+    size_t length = strlen(palabra);
+    if (length > 0 && palabra[length - 1] == '\n') {
+        palabra[length - 1] = '\0';
+    }
+
     fclose(filePointer);
+    return palabra;
 }
 
-//dificultad devuelve el tag de la palabra que se va a usar en el juego
+//TERMINADO
 int dificultad() {
     bool salir = false;
     int eleccion, tag;
@@ -179,3 +207,13 @@ int dificultad() {
     system("cls");
     return tag;
 }
+
+//A MODIFICAR
+void espacios(char* palabra){
+    size_t lenght = strlen(palabra);
+    for (size_t i = 0; i < lenght; i++){
+        printf("_ ");
+    }
+    printf("\n");
+}
+//------------------------------------funciones_desarrolladas-----------------------------------------------------------
