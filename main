@@ -8,62 +8,45 @@
 #include <ctype.h>
 //------------------------------------funciones-----------------------------------------------------------
 
+
+char palabra[50]; // variable global, para usar en todos los modos de juego
+struct player{
+    char nombre[50];
+    float puntuacion;
+};
+
+//------------limpieza--------
 //Limpia la el Buffer
 void limpiarBuffer();
-
 //Limpia la pantalla
 void erase();
+//------------limpieza--------
 
 // Espera hasta que se presione "Enter" o se alcance el final del archivo
 void precionar_enter();
-
 //Subprograma que genrera el menu, para que el usuario navegue
 void menu();
-
 //Subprograma del juego
 void juegar(); 
-
 void clasico();
-
 void arcade();
-
 void star_classico(int eleccion);
 
-char palabra[50]; // variable global, para usar en todos los modos de juego
 
 void Perdiste();
-
 void victoria();
-
 void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
-
-    
 void precionar_enter(); // Espera hasta que se presione "Enter"
-
-
-
-void Normal(); // <<<<<<<<<------------------------------- Eliminar
-
-
 void explicación();
-
-
 void puntuacion();
-
-
 void ObtenerPalabra(int tag);
-
-
-char* espacios();
-
-
 int dificultad();
 
 
 
 //------------------------------------main-----------------------------------------------------------
 int main(){
-
+    
     erase();
     menu();
 
@@ -80,33 +63,17 @@ int main(){
 
 //------------------------------------funciones_desarrolladas-----------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Limpia la pantalla
 void erase(){
    printf("\033[2J"); // Borra la pantalla
    printf("\033[H");  // Mueve el cursor al principio
 }
 
-
 //Limpia la el Buffer
 void limpiarBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
-
 
 // Espera hasta que se presione "Enter" o se alcance el final del archivo
 void precionar_enter(){
@@ -119,50 +86,52 @@ void precionar_enter(){
 
 //Subprograma que genrera el menu, para que el usuario navegue
 void menu(){
+    struct player p;
+    int elecion = 0;
 
-   int elecion = 0;
+    printf("porfavor ingresa tu nombre: ");
+    scanf("%s", p.nombre);
+
    /*texto_menu(); //Animacion de texto*/
-   
-   printf("\n\n");
-   printf("    \033[38;2;251;229;173m|============================================================|\n");
-   printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
-   printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Ahorcado ||                    \033[38;2;251;229;173m|\n");
-   printf("    \033[38;2;251;229;173m|                                                            |\n");
-   printf("    \033[38;2;251;229;173m|============================================================|\n");
-   printf("    \033[38;2;251;229;173m|    1- Jugar.                                              \033[38;2;251;229;173m|\n");
-   printf("    \033[38;2;251;229;173m|    2- Reglas.                                               \033[38;2;251;229;173m|\n");
-   printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
-   printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
-   printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
-   printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
-   usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Ahorcado ||                    \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
 
-   printf(" Ingrese un numero para hacer una eleccion.\n");
-   printf(" Su elecion es: "); 
+    printf(" Ingrese un numero para hacer una eleccion.\n");
+    printf(" Su elecion es: "); 
 
-   scanf("%d", &elecion);
+    scanf("%d", &elecion);
 
-   switch (elecion) {
-   case 1:
-      erase();
-      limpiarBuffer();
-      juegar();
-      break;
+    switch (elecion) {
+    case 1:
+        erase();
+        limpiarBuffer();
+        juegar();
+        break;  
+    case 2:
+        erase();
+        limpiarBuffer();
+        //reglas();
+        break;
 
-   case 2:
-      erase();
-      limpiarBuffer();
-      //reglas();
-      break;
+    case 3:
+        erase();
+        limpiarBuffer();
+        //record(); 
+        break;
 
-   case 3:
-      erase();
-      limpiarBuffer();
-      //record(); 
-      break;
-
-   case 0:
-      erase();
+    case 0:
+        erase();
       //texto_salida();
       exit(0); // Cierra el programa con código de salida 0
     break;
@@ -173,21 +142,6 @@ void menu(){
     menu();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void juegar() {
     
@@ -745,43 +699,6 @@ void puntuacion(){
 */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 int dificultad() {
     bool salir = false;
@@ -866,4 +783,3 @@ void star_Arcade_Rush(int eleccion){
     printf("Tiempo terminado.\n");
     //agregar palabras adivinadas con puntuacion
 }
-
