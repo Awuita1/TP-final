@@ -20,27 +20,49 @@ struct player{
 void limpiarBuffer();
 //Limpia la pantalla
 void erase();
+ // Espera hasta que se presione "Enter"
+void precionar_enter();
 //------------limpieza--------
 
 // Espera hasta que se presione "Enter" o se alcance el final del archivo
 void precionar_enter();
+
 //Subprograma que genrera el menu, para que el usuario navegue
 void menu();
-//Subprograma del juego
-void juegar(); 
+//----------Subprogramas del juego----------
+void jugar(); //elegir entre clasico o arcade
+
+//--------------eleccion de dificultad--------------
+
+int dificultad(); //define el tag
+void ObtenerPalabra(int tag); //busqueda en el archivo mediante tag
+//--------------eleccion de dificultad--------------
+
+//--------------eleccion de modo de juego--------------
 void clasico();
 void arcade();
-void star_classico(int eleccion);
 
+//--------------modos arcade--------------
+void PapaCaliente();
+void HoyoEnUno();
+void AhorcadoRush();
+//--------------modos arcade--------------
 
+//--------------eleccion de modo de juego--------------
+
+//-------------elem del juego----------------
+void star_classico(int eleccion); // ahorcado - normal
 void Perdiste();
 void victoria();
 void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
-void precionar_enter(); // Espera hasta que se presione "Enter"
+
+//-------------elem del juego----------------
+
+//---------------- elem del menu ----------------
 void explicación();
 void puntuacion();
-void ObtenerPalabra(int tag);
-int dificultad();
+//---------------- elem del menu ----------------
+
 
 
 
@@ -77,10 +99,10 @@ void limpiarBuffer() {
 
 // Espera hasta que se presione "Enter" o se alcance el final del archivo
 void precionar_enter(){
-   int c;
-   do {
-      c = getchar();
-   } while (c != '\n'); 
+    int c;
+    do {
+        c = getchar();
+    } while (c != '\n'); 
 }
 
 
@@ -116,7 +138,7 @@ void menu(){
     case 1:
         erase();
         limpiarBuffer();
-        juegar();
+        jugar();
         break;  
     case 2:
         erase();
@@ -143,7 +165,7 @@ void menu(){
     }
 }
 
-void juegar() {
+void jugar() {
     
     int elecion = 0;
 
@@ -153,7 +175,7 @@ void juegar() {
     printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego ||                    \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|                                                            |\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
-    printf("    \033[38;2;251;229;173m|    1- Clasico.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    1- Clasico.                                             \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|    2- Arcade.                                              \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
     printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
@@ -170,7 +192,7 @@ void juegar() {
         limpiarBuffer();
         clasico();
         break;
-      
+
     case 2:
 
         erase();
@@ -187,25 +209,9 @@ void juegar() {
     default:
         erase();
         printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
-        juegar();
+        jugar();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void clasico(){
 
@@ -240,7 +246,7 @@ void clasico(){
         ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
         star_classico(elecion);
         break;
-      
+    
     case 2:
         erase();
         limpiarBuffer();
@@ -249,7 +255,7 @@ void clasico(){
         star_classico(elecion);
         break;
 
-     case 3:
+    case 3:
         erase();
         limpiarBuffer();
         tag = 71 + rand() % 36;;
@@ -270,22 +276,9 @@ void clasico(){
     default:
         erase();
         printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
-        juegar();
+        jugar();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void ObtenerPalabra(int tag) {
     size_t maxLength = 50;
@@ -316,9 +309,6 @@ void ObtenerPalabra(int tag) {
     // No es necesario devolver la palabra, ya que se está modificando directamente en la función.
 }
     
-
-
-
 void hombre_ahorcado (int contador){
 
     if (contador == 0)
@@ -396,12 +386,6 @@ void hombre_ahorcado (int contador){
     }
 
 }
-
-
-
-
-
-
 
 void star_classico(int eleccion) {
 
@@ -514,72 +498,16 @@ void star_classico(int eleccion) {
 
 } 
 
-
-
-
-/*
-- Modo arcade:
-         - Contra reloj
-         - Hoyo en uno
-         - Boos Rush
-
-- Una estructura de usuario 
-- Medir el Tiempo
-- Ranking
-
-
-- Despues queda en belleser el programa, pero eso lo hago yo*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void arcade(){
-      //break;
-}
-
-void Perdiste(){
-        hombre_ahorcado(7);
-        printf(" \033[38;2;251;229;173mPerdiste\n");
-}
-
-void victoria(){
-        printf(" \033[38;2;251;229;173mGanaste\n");
-}
-
-
-/*
-
-void arcade(){
-        int elecion = 0;
-
     printf("\n\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
     printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego ||                    \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|                                                            |\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
-    printf("    \033[38;2;251;229;173m|    1- Clasico.                                              \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|    2- Arcade.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    1- Papa caliente.                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Hoyo en uno.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Ahorcado rush.                                              \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
     printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
@@ -593,47 +521,83 @@ void arcade(){
     case 1:
         erase();
         limpiarBuffer();
-        clasico();
+        tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+        PapaCaliente();
         break;
-      
+    
     case 2:
-
         erase();
         limpiarBuffer();
-        arcade();
+        tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+        HoyoEnUno();
         break;
-
-    case 0:
+    case 3: 
         erase();
-        menu(); // Cierra el programa con código de salida 0
+        limpiarBuffer();
+        tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+        AhorcadoRush();
         break;
-
+    case 0: 
+        erase();
+        limpiarBuffer();
+        jugar();
     default:
         erase();
         printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
-        juegar();
+        arcade();
     }
 }
 
-//dificultad devuelve el tag de la palabra que se va a usar en el juego
-*/
-/*
 
-//__________Interfaz principal_______________
 
-void Normal(){
-
-//------------------elección de dificultad------------------
-    int tag = dificultad();
-    char* palabra = ObtenerPalabra(tag);
-//------------------elección de dificultad------------------
-
-//------------------imprimir espacio vacios------------------
-    printf("mi tag es: %d, y mi palabra es: %s",tag, palabra);
-//------------------imprimir espacio vacios------------------
+void Perdiste(){
+        hombre_ahorcado(7);
+        printf(" \033[38;2;251;229;173mPerdiste\n");
 }
-*/
 
+void victoria(){
+        printf(" \033[38;2;251;229;173mGanaste\n");
+}
+
+void star_Arcade_Rush(int eleccion){
+    time_t start_time, current_time;
+
+    // Obtener el tiempo de inicio
+    time(&start_time);
+
+    // Duración deseada en segundos (5 minutos) en vez de hardocedearlo podriamos convertir una variable al 5 y que el jugador mida el tiempo
+    int duration = 5 * 60;
+
+    // Bucle mientras no haya pasado el tiempo deseado
+    //definimos la dificultad (medio)
+    int tag = 36 + rand() % 36;
+    ObtenerPalabra(tag);
+    while (1) {
+        // Obtener el tiempo actual
+        time(&current_time);
+
+        // Calcular la diferencia de tiempo
+        int elapsed_time = difftime(current_time, start_time);
+
+        // Salir del bucle si ha pasado el tiempo deseado
+        if (elapsed_time >= duration) {
+            break;
+        }
+
+        //-----------JUEGO-----------
+
+        star_classico(1); // sujeto a cambio
+        
+        //-----------JUEGO-----------
+        sleep(1);
+    }
+
+    printf("Tiempo terminado.\n");
+    //agregar palabras adivinadas con puntuacion
+}
 /*
 void explicación(){
     system("cls");
@@ -694,92 +658,16 @@ void puntuacion(){
     printf("Funciona eleccion 2\n");
     system("cls");
 }
-
-
 */
-
 
 /*
-int dificultad() {
-    bool salir = false;
-    int eleccion, tag;
-    system("cls");
-    //Escanea la eleccion del usuario y devuelva el tag de la palabra que se usara
-    do
-    {
-        printf("Dificultad: \n");
-        printf("1. Fácil: de 4 a 5 letras.\n");
-        printf("2. Medio: de 6 a 9 letras.\n");
-        printf("3. Difícil: de 10 a 13 letras.\n");
-        printf("Seleccione dificultad: ");
-        scanf("%d", &eleccion);
-        switch (eleccion)
-        {
-        case 1:
-            tag = rand() % 36; 
-            salir = true;
-            break;
-        case 2:
-            tag = 36 + rand() % 36;
-            salir = true;
-            break;
-        case 3:
-            tag = 71 + rand() % 36;
-            salir = true;
-            break;
-        default:
-            system("cls");
-            printf("Opción no válida.\n");
-            break;
-        }
-    //fin de escaneo
-    } while (salir != true);
+- Modo arcade:
+    - Contra reloj
+    - Hoyo en uno
+    - Boos Rush
 
-    system("cls");
-    return tag;
-}
-
-//char* palabra(char* palabra){
-//    printf("mi palabra es %s", palabra);
-//}
+- Medir el Tiempo
+- Ranking
 
 
-
-void texto_menu() {}//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Este void solo trae una animacion >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-*/
-void star_Arcade_Rush(int eleccion){
-    time_t start_time, current_time;
-
-    // Obtener el tiempo de inicio
-    time(&start_time);
-
-    // Duración deseada en segundos (5 minutos) en vez de hardocedearlo podriamos convertir una variable al 5 y que el jugador mida el tiempo
-    int duration = 5 * 60;
-
-    // Bucle mientras no haya pasado el tiempo deseado
-    //definimos la dificultad (medio)
-    int tag = 36 + rand() % 36;
-    ObtenerPalabra(tag);
-    while (1) {
-        // Obtener el tiempo actual
-        time(&current_time);
-
-        // Calcular la diferencia de tiempo
-        int elapsed_time = difftime(current_time, start_time);
-
-        // Salir del bucle si ha pasado el tiempo deseado
-        if (elapsed_time >= duration) {
-            break;
-        }
-
-        //-----------JUEGO-----------
-
-        star_classico(1); // sujeto a cambio
-        
-        //-----------JUEGO-----------
-        sleep(1);
-    }
-
-    printf("Tiempo terminado.\n");
-    //agregar palabras adivinadas con puntuacion
-}
+- Despues queda en belleser el programa, pero eso lo hago yo*/
