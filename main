@@ -830,3 +830,40 @@ int dificultad() {
 
 void texto_menu() {}//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Este void solo trae una animacion >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 */
+void star_Arcade_Rush(int eleccion){
+    time_t start_time, current_time;
+
+    // Obtener el tiempo de inicio
+    time(&start_time);
+
+    // Duración deseada en segundos (5 minutos) en vez de hardocedearlo podriamos convertir una variable al 5 y que el jugador mida el tiempo
+    int duration = 5 * 60;
+
+    // Bucle mientras no haya pasado el tiempo deseado
+    //definimos la dificultad (medio)
+    int tag = 36 + rand() % 36;
+    ObtenerPalabra(tag);
+    while (1) {
+        // Obtener el tiempo actual
+        time(&current_time);
+
+        // Calcular la diferencia de tiempo
+        int elapsed_time = difftime(current_time, start_time);
+
+        // Salir del bucle si ha pasado el tiempo deseado
+        if (elapsed_time >= duration) {
+            break;
+        }
+
+        //-----------JUEGO-----------
+
+        star_classico(1); // sujeto a cambio
+        
+        //-----------JUEGO-----------
+        sleep(1);
+    }
+
+    printf("Tiempo terminado.\n");
+    //agregar palabras adivinadas con puntuacion
+}
+
