@@ -73,13 +73,6 @@ int main(){
     menu();
 
     return 0;
-
-    /*char nombre[50]; ///POOOOOOPPPPPPPPPPOOOOOOOOOOPPPPPPPP*/
-
-    /*printf("Porfavor ingresa tu nombre.\n");*/
-
-    /*scanf("%s",nombre); ///POOOOOOPPPPPPPPPPOOOOOOOOOOPPPPPPPP*/
-
 }
 
 
@@ -499,6 +492,7 @@ void star_classico(int eleccion) {
 } 
 
 void arcade(){
+    int eleccion, tag;
     printf("\n\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
     printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
@@ -515,9 +509,9 @@ void arcade(){
     printf(" Ingrese un numero para hacer una eleccion.\n");
     printf(" Su elecion es: "); 
 
-    scanf("%d", &elecion);
+    scanf("%d", &eleccion);
 
-    switch (elecion) {
+    switch (eleccion) {
     case 1:
         erase();
         limpiarBuffer();
@@ -596,8 +590,21 @@ void star_Arcade_Rush(int eleccion){
     }
 
     printf("Tiempo terminado.\n");
-    //agregar palabras adivinadas con puntuacion
 }
+
+void PapaCaliente(){
+    printf("funciona\n");
+}
+
+void HoyoEnUno(){
+    printf("funciona\n");
+}
+
+void AhorcadoRush(){
+    printf("funciona\n");
+}
+
+
 /*
 void explicación(){
     system("cls");
