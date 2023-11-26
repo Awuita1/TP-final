@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+char palabra[50];
+
+void HoyoEnUNoPistasYPalabra();
+void PistasYpalabra();
+
+void PistasYpalabra(int tag) {
+    FILE *filePointer = fopen("Palabras.dat", "r");
+
+    if (filePointer == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return;
+    }
+
+    // Busca la línea correspondiente al tag
+    for (int i = 0; i < tag; ++i) {
+        if (fgets(palabra, sizeof(palabra), filePointer) == NULL) {
+            printf("Error: No se encontró la palabra para el tag %d.\n", tag);
+            fclose(filePointer);
+        }
+    }
+
+
+    // Elimina el salto de línea al final de la palabra
+    size_t length = strlen(palabra);
+    if (length > 0 && palabra[length - 1] == '\n') {
+        palabra[length - 1] = '\0';
+    }
+}
+
+void HoyoEnUNoPistasYPalabra() {
+    // Variable para escribir
+
+    // Generar un valor aleatorio entre 1 y 15 para x
+    int x = rand() % 15 + 1;
+
+    // Calcular el valor de x según la fórmula dada
+    int tag = 106 + (x - 1) * 3;
+
+    PistasYpalabra(tag +1);
+    printf("%s",palabra);
+    PistasYpalabra(tag +2);
+    printf("%s",palabra);
+    PistasYpalabra(tag);
+}
