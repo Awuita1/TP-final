@@ -56,6 +56,7 @@ void AhorcadoRush();
 int star_classico(int eleccion); // ahorcado - normal devuelve 0 si perdes y 1 si ganas
 void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
 void PistasYpalabra();
+void HoyoEnUnoIngreso(int tag);
 //-------------elem del juego----------------
 
 //---------------- elem del menu ----------------
@@ -63,11 +64,15 @@ void explicación();
 void puntuacion();
 //---------------- elem del menu ----------------
 
-
+//----------------Pantallas de Game Over ----------------
+void HoyoEnUnoGameOver();
+void AhorcadoRushGameOver();
+//----------------Pantallas de Game Over ----------------
 
 
 //------------------------------------main-----------------------------------------------------------
 int main(){
+    srand(time(NULL));
     struct player p;
     printf("porfavor ingresa tu nombre: "); //poner linda esta parte JDKSJDLKSAJDLKSA
     scanf("%s", p.nombre); 
@@ -102,8 +107,9 @@ void precionar_enter(){
     } while (c != '\n'); 
 }
 
+//-----------------------------------------------------------MENUS-----------------------------------------------------------
 
-//Subprograma que genrera el menu, para que el usuario navegue
+//Subprograma que genera el menu, para que el usuario navegue
 void menu(){
     
     int elecion = 0;
@@ -159,6 +165,7 @@ void menu(){
     }
 }
 
+//Subprograma que genera el menu, para que el usuario decida si entre normal o arcade
 void jugar() {
     
     int elecion = 0;
@@ -206,11 +213,11 @@ void jugar() {
     }
 }
 
+//Subprograma que genera el menu, para que el usuario elija la dificultad de el modo calsico
 void clasico(){
 
     int elecion = 0;
     int tag = 0;
-    srand(time(NULL));
     
     printf("\n\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
@@ -273,6 +280,146 @@ void clasico(){
     }
 }
 
+//Subprograma que genera el menu, para que el usuario elija el modo de juego arcade
+void arcade(){
+    int eleccion, tag;
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego ||                    \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Papa caliente.                                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Hoyo en uno.                                         \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ahorcado rush.                                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
+    printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+    printf(" Ingrese un numero para hacer una eleccion.\n");
+    printf(" Su elecion es: "); 
+
+    scanf("%d", &eleccion);
+
+    switch (eleccion) {
+    case 1:
+        erase();
+        limpiarBuffer();
+        tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+        PapaCaliente();
+        break;
+    
+    case 2:
+        erase();
+        limpiarBuffer();
+        tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+        HoyoEnUno();
+        break;
+    case 3: 
+        erase();
+        limpiarBuffer();
+        tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+        AhorcadoRush();
+        break;
+    case 0: 
+        erase();
+        limpiarBuffer();
+        jugar();
+    default:
+        erase();
+        printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
+        arcade();
+    }
+}
+
+//-----------------------------------------------------------MENUS-----------------------------------------------------------
+
+//-----------------------------------------------------------MENUS GAME OVER-----------------------------------------------------------
+
+void AhorcadoRushGameOver(char GameOver[50]){
+    int aux;
+    printf("\n\n");
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| %s ||                          \033[38;2;251;229;173m|\n", GameOver);
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- jugar otra vez.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Volver al menu.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+
+    printf(" Ingrese un numero para hacer una eleccion.\n");
+    printf(" Su elecion es: "); 
+
+    scanf("%d",aux);
+    switch(aux){
+        case 1:
+            erase();
+            limpiarBuffer();
+            AhorcadoRush();
+            break;
+            
+        case 2:
+            erase();
+            limpiarBuffer();
+            menu();
+            break;
+
+        default:
+            HoyoEnUnoGameOver();
+            break; 
+    }
+}
+
+void HoyoEnUnoGameOver(char GameOver[50]){
+    int aux;
+    printf("\n\n");
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| %s ||                         \033[38;2;251;229;173m|\n", GameOver);
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- jugar otra vez.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Volver al menu.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+
+    printf(" Ingrese un numero para hacer una eleccion.\n");
+    printf(" Su elecion es: "); 
+
+    scanf("%d",aux);
+    switch(aux){
+        case 1:
+            erase();
+            limpiarBuffer();
+            HoyoEnUno();
+            break;
+            
+        case 2:
+            erase();
+            limpiarBuffer();
+            menu();
+            break;
+
+        default:
+            HoyoEnUnoGameOver(GameOver);
+            break; 
+    }
+}
+
+//GameOver clasico agregar
+
+//game over papa caliente agregar
+
+//-----------------------------------------------------------MENUS GAME OVER-----------------------------------------------------------
+
+//-----------------------------------------------------------FUNCIONES-----------------------------------------------------------
 void ObtenerPalabra(int tag) {
     size_t maxLength = 50;
     FILE* filePointer;
@@ -378,6 +525,88 @@ void hombre_ahorcado (int contador){
     printf(" █████  / \\  \n\n\n");
     }
 
+}
+
+void PistasYpalabra(int tag) {
+    FILE *filePointer = fopen("Palabras.dat", "r");
+
+    if (filePointer == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return;
+    }
+
+    // Busca la línea correspondiente al tag
+    for (int i = 0; i < tag; ++i) {
+        if (fgets(palabra, sizeof(palabra), filePointer) == NULL) {
+            printf("Error: No se encontró la palabra para el tag %d.\n", tag);
+            fclose(filePointer);
+        }
+    }
+
+
+    // Elimina el salto de línea al final de la palabra
+    size_t length = strlen(palabra);
+    if (length > 0 && palabra[length - 1] == '\n') {
+        palabra[length - 1] = '\0';
+    }
+}
+
+void HoyoEnUnoIngreso(int tag) {
+    char GameOver[50], palabra_del_usuario[50];
+    while (strlen(palabra_del_usuario) < strlen(palabra))
+    {   
+        // imprimo las pistas
+        PistasYpalabra(tag + 1);
+        printf("\nPista N° 1: %s\n", palabra);
+
+        PistasYpalabra(tag + 2);
+        printf("Pista N° 2: %s\n", palabra);
+        // imprimo las pistas
+
+        //la variable global palabra se queda con la palabra a adivinar
+        PistasYpalabra(tag);
+
+        printf("\n\n");
+        hombre_ahorcado(0); // Muestra la imagen inicial del ahorcado
+
+        //imprimo los espacios de la palabra a adivinar
+        for (int k = 0; k < strlen(palabra)-1 ; k++) {
+            printf("_ ");
+        }
+        printf(" \n");
+
+        printf("\n\nIngresa la palabra completa: ");
+        scanf("%s", palabra_del_usuario);
+        if (strlen(palabra_del_usuario) < 3){
+            printf("palabra muy corta, ingrese devuelta");
+
+            //salto al inicio de la funcion
+            HoyoEnUnoIngreso(tag);
+
+        } else {
+            if (strncmp(palabra,palabra_del_usuario, strlen(palabra) - 1) == 0){
+                erase();
+                limpiarBuffer();
+                strcpy(GameOver, "Has ganado");
+                HoyoEnUnoGameOver(GameOver);
+            } else {
+                erase();
+                limpiarBuffer();
+                hombre_ahorcado(7);
+                strcpy(GameOver, "Has perdido");
+                HoyoEnUnoGameOver(GameOver);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------FUNCIONES-----------------------------------------------------------
+
+//-----------------------------------------------------------JUEGO PRINCIPAL Y MODOS DE JUEGO-----------------------------------------------------------
+
+//terminar
+void PapaCaliente(){
+    printf("funciona\n");
 }
 
 int star_classico(int eleccion) {
@@ -491,105 +720,10 @@ int star_classico(int eleccion) {
             return 1;
     }
 
-}   
-
-void arcade(){
-    int eleccion, tag;
-    printf("\n\n");
-    printf("    \033[38;2;251;229;173m|============================================================|\n");
-    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego ||                    \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|                                                            |\n");
-    printf("    \033[38;2;251;229;173m|============================================================|\n");
-    printf("    \033[38;2;251;229;173m|    1- Papa caliente.                                       \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|    2- Hoyo en uno.                                         \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|    3- Ahorcado rush.                                       \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
-    printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
-
-    printf(" Ingrese un numero para hacer una eleccion.\n");
-    printf(" Su elecion es: "); 
-
-    scanf("%d", &eleccion);
-
-    switch (eleccion) {
-    case 1:
-        erase();
-        limpiarBuffer();
-        tag = 36 + rand() % 36;
-        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
-        PapaCaliente();
-        break;
-    
-    case 2:
-        erase();
-        limpiarBuffer();
-        tag = 36 + rand() % 36;
-        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
-        HoyoEnUno();
-        break;
-    case 3: 
-        erase();
-        limpiarBuffer();
-        tag = 36 + rand() % 36;
-        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
-        AhorcadoRush();
-        break;
-    case 0: 
-        erase();
-        limpiarBuffer();
-        jugar();
-    default:
-        erase();
-        printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
-        arcade();
-    }
-}
-
-
-
-void star_Arcade_Rush(int eleccion){
-    time_t start_time, current_time;
-
-    // Obtener el tiempo de inicio
-    time(&start_time);
-
-    // Duración deseada en segundos (5 minutos) en vez de hardocedearlo podriamos convertir una variable al 5 y que el jugador mida el tiempo
-    int duration = 5 * 60;
-
-    // Bucle mientras no haya pasado el tiempo deseado
-    //definimos la dificultad (medio)
-    int tag = 36 + rand() % 36;
-    ObtenerPalabra(tag);
-    while (1) {
-        // Obtener el tiempo actual
-        time(&current_time);
-
-        // Calcular la diferencia de tiempo
-        int elapsed_time = difftime(current_time, start_time);
-
-        // Salir del bucle si ha pasado el tiempo deseado
-        if (elapsed_time >= duration) {
-            break;
-        }
-
-        //-----------JUEGO-----------
-
-        star_classico(1); // sujeto a cambio
-        
-        //-----------JUEGO-----------
-        sleep(1);
-    }
-
-    printf("Tiempo terminado.\n");
-}
-
-void PapaCaliente(){
-    printf("funciona\n");
 }
 
 void AhorcadoRush(){
+    char GameOver[50];
     int contador = 0,streak = 1;
     for (int i = 0; i < 5; i++){
         printf("Racha: %d\n", i);
@@ -691,8 +825,8 @@ void AhorcadoRush(){
 
         if (contador == 7){
             hombre_ahorcado(7);
-            printf(" \033[38;2;251;229;173mPerdiste\n");
-            menu();
+            strcpy(GameOver, "Has perdido");
+            HoyoEnUnoGameOver(GameOver);
         }
 
         else {
@@ -703,70 +837,24 @@ void AhorcadoRush(){
                 printf("¡Bien!");
                 streak;
         }
-            }
-}
-
-void PistasYpalabra(int tag) {
-    FILE *filePointer = fopen("Palabras.dat", "r");
-
-    if (filePointer == NULL) {
-        printf("Error al abrir el archivo.\n");
-        return;
     }
-
-    // Busca la línea correspondiente al tag
-    for (int i = 0; i < tag; ++i) {
-        if (fgets(palabra, sizeof(palabra), filePointer) == NULL) {
-            printf("Error: No se encontró la palabra para el tag %d.\n", tag);
-            fclose(filePointer);
-        }
-    }
-
-
-    // Elimina el salto de línea al final de la palabra
-    size_t length = strlen(palabra);
-    if (length > 0 && palabra[length - 1] == '\n') {
-        palabra[length - 1] = '\0';
-    }
+    strcpy(GameOver, "Has ganado");
+    HoyoEnUnoGameOver(GameOver);
 }
 
 void HoyoEnUno() {
+
     // Generar un valor aleatorio entre 1 y 15 para x
     int x = rand() % 15 + 1;
 
     // Calcular el valor de x según la fórmula dada
     int tag = 106 + (x - 1) * 3;
 
-    PistasYpalabra(tag + 1);
-    printf("Pista N° 1: %s", palabra);
+    HoyoEnUnoIngreso(tag);
 
-    PistasYpalabra(tag + 2);
-    printf("Pista N° 2: %s", palabra);
-
-    PistasYpalabra(tag);
-
-    printf("\n\n");
-    hombre_ahorcado(0); // Muestra la imagen inicial del ahorcado
-
-    // Imprime la palabra oculta
-    for (int k = 0; k < strlen(palabra); k++) {
-        printf("_ ");
-    }
-
-    char palabra_del_usuario[50];
-    printf("\n\nIngresa la palabra completa: ");
-    scanf("%s", palabra_del_usuario);
-
-    if (strncmp(palabra, palabra_del_usuario, strlen(palabra)) == 0) {
-        printf("\n\033[38;2;251;229;173Ganaste\n");
-    } else {
-        printf("\n\033[38;2;251;229;173Perdiste\n");
-        hombre_ahorcado(7); // Muestra la imagen completa del ahorcado
-    }
 }
 
-
-
+//-----------------------------------------------------------JUEGO PRINCIPAL Y MODOS DE JUEGO-----------------------------------------------------------
 
 /*
 void explicación(){
