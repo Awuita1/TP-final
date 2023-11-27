@@ -52,8 +52,8 @@ void AhorcadoRush();
 
 //-------------elem del juego----------------
 void star_classico(int eleccion); // ahorcado - normal
-void Perdiste();
-void victoria();
+int Perdiste();
+int victoria();
 void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
 
 //-------------elem del juego----------------
@@ -106,6 +106,7 @@ void menu(){
 
     printf("porfavor ingresa tu nombre: ");
     scanf("%s", p.nombre);
+    erase();
 
    /*texto_menu(); //Animacion de texto*/
     printf("\n\n");
@@ -161,7 +162,6 @@ void menu(){
 void jugar() {
     
     int elecion = 0;
-
     printf("\n\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
     printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
@@ -489,7 +489,7 @@ void star_classico(int eleccion) {
         victoria(); //<__________________ programar
     }
 
-} 
+}   
 
 void arcade(){
     int eleccion, tag;
@@ -499,9 +499,9 @@ void arcade(){
     printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego ||                    \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|                                                            |\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n");
-    printf("    \033[38;2;251;229;173m|    1- Papa caliente.                                            \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|    2- Hoyo en uno.                                              \033[38;2;251;229;173m|\n");
-    printf("    \033[38;2;251;229;173m|    2- Ahorcado rush.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    1- Papa caliente.                                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Hoyo en uno.                                         \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ahorcado rush.                                       \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
     printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
     printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
@@ -545,15 +545,15 @@ void arcade(){
     }
 }
 
-
-
-void Perdiste(){
-        hombre_ahorcado(7);
-        printf(" \033[38;2;251;229;173mPerdiste\n");
+int Perdiste(){
+    hombre_ahorcado(7);
+    printf(" \033[38;2;251;229;173mPerdiste\n");
+    return 0;
 }
 
-void victoria(){
-        printf(" \033[38;2;251;229;173mGanaste\n");
+int victoria(){
+    printf(" \033[38;2;251;229;173mGanaste\n");
+    return 1;
 }
 
 void star_Arcade_Rush(int eleccion){
@@ -601,7 +601,18 @@ void HoyoEnUno(){
 }
 
 void AhorcadoRush(){
-    printf("funciona\n");
+    int streak = 1;
+    for (int i = 0; i < 5; i++){
+        printf("Racha: %d\n", i);
+        star_classico(1);
+        printf("\n");
+        if (streak != 1){
+            erase();
+            limpiarBuffer();
+            printf(" \033[38;2;251;229;173mPerdiste]\n");
+            menu();
+        }
+    }
 }
 
 
