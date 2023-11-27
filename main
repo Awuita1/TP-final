@@ -51,7 +51,7 @@ void AhorcadoRush();
 //--------------eleccion de modo de juego--------------
 
 //-------------elem del juego----------------
-void star_classico(int eleccion); // ahorcado - normal
+int star_classico(int eleccion); // ahorcado - normal devuelve 0 si perdes y 1 si ganas
 int Perdiste();
 int victoria();
 void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
@@ -69,6 +69,10 @@ void puntuacion();
 //------------------------------------main-----------------------------------------------------------
 int main(){
     
+    printf("porfavor ingresa tu nombre: "); //poner linda esta parte JDKSJDLKSAJDLKSA
+    scanf("%s", p.nombre); 
+
+
     erase();
     menu();
 
@@ -104,9 +108,9 @@ void menu(){
     struct player p;
     int elecion = 0;
 
-    printf("porfavor ingresa tu nombre: ");
-    scanf("%s", p.nombre);
-    erase();
+    printf("porfavor ingresa tu nombre: "); //mover a main
+    scanf("%s", p.nombre); // mover a main
+    erase(); // mover a main
 
    /*texto_menu(); //Animacion de texto*/
     printf("\n\n");
@@ -380,7 +384,7 @@ void hombre_ahorcado (int contador){
 
 }
 
-void star_classico(int eleccion) {
+int star_classico(int eleccion) {
 
     int contador = 0, verificador = 0, aux = 0, aux_2 = 0; // una variable de contador , otra que verifica si el usuario acerto la letra y suma de aciertos que cuenta si el usuario completo la palabra
     int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
@@ -409,7 +413,7 @@ void star_classico(int eleccion) {
             }
         }
         
-        printf("Letras usas: ");
+        printf("Letras usadas: ");
         for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
         {
             printf("%c, ", abecedario[j]);
@@ -478,15 +482,17 @@ void star_classico(int eleccion) {
 
 
     if (contador == 7){
-        Perdiste(); //<__________________ programar
+        hombre_ahorcado(7);
+        printf(" \033[38;2;251;229;173mPerdiste\n");
+        return 0;
     }
 
     else {
             for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
             printf("%c ", palabra[k]);
             }
-            //<================== poner un mensaje que le diga al usuario que apriente enter para continuar
-        victoria(); //<__________________ programar
+            printf(" \033[38;2;251;229;173Ganaste\n");
+            return 1;
     }
 
 }   
@@ -603,10 +609,11 @@ void HoyoEnUno(){
 void AhorcadoRush(){
     int streak = 1;
     for (int i = 0; i < 5; i++){
+
         printf("Racha: %d\n", i);
-        star_classico(1);
+        streak = star_classico(1);
         printf("\n");
-        if (streak != 1){
+        if (streak == 0){
             erase();
             limpiarBuffer();
             printf(" \033[38;2;251;229;173mPerdiste]\n");
