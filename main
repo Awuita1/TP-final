@@ -29,7 +29,9 @@ void precionar_enter();
 
 //Subprograma que genrera el menu, para que el usuario navegue
 void menu();
+
 //----------Subprogramas del juego----------
+
 void jugar(); //elegir entre clasico o arcade
 
 //--------------eleccion de dificultad--------------
@@ -52,10 +54,8 @@ void AhorcadoRush();
 
 //-------------elem del juego----------------
 int star_classico(int eleccion); // ahorcado - normal devuelve 0 si perdes y 1 si ganas
-int Perdiste();
-int victoria();
 void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
-
+void PistasYpalabra();
 //-------------elem del juego----------------
 
 //---------------- elem del menu ----------------
@@ -68,7 +68,7 @@ void puntuacion();
 
 //------------------------------------main-----------------------------------------------------------
 int main(){
-    
+    struct player p;
     printf("porfavor ingresa tu nombre: "); //poner linda esta parte JDKSJDLKSAJDLKSA
     scanf("%s", p.nombre); 
 
@@ -105,12 +105,8 @@ void precionar_enter(){
 
 //Subprograma que genrera el menu, para que el usuario navegue
 void menu(){
-    struct player p;
+    
     int elecion = 0;
-
-    printf("porfavor ingresa tu nombre: "); //mover a main
-    scanf("%s", p.nombre); // mover a main
-    erase(); // mover a main
 
    /*texto_menu(); //Animacion de texto*/
     printf("\n\n");
@@ -413,7 +409,7 @@ int star_classico(int eleccion) {
             }
         }
         
-        printf("Letras usadas: ");
+        printf("Letras usas: ");
         for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
         {
             printf("%c, ", abecedario[j]);
@@ -551,16 +547,7 @@ void arcade(){
     }
 }
 
-int Perdiste(){
-    hombre_ahorcado(7);
-    printf(" \033[38;2;251;229;173mPerdiste\n");
-    return 0;
-}
 
-int victoria(){
-    printf(" \033[38;2;251;229;173mGanaste\n");
-    return 1;
-}
 
 void star_Arcade_Rush(int eleccion){
     time_t start_time, current_time;
@@ -602,25 +589,183 @@ void PapaCaliente(){
     printf("funciona\n");
 }
 
-void HoyoEnUno(){
-    printf("funciona\n");
-}
-
 void AhorcadoRush(){
-    int streak = 1;
+    int contador = 0,streak = 1;
     for (int i = 0; i < 5; i++){
-
         printf("Racha: %d\n", i);
-        streak = star_classico(1);
-        printf("\n");
-        if (streak == 0){
-            erase();
-            limpiarBuffer();
-            printf(" \033[38;2;251;229;173mPerdiste]\n");
+
+        int verificador = 0, aux = 0, aux_2 = 0; // una variable de contador , otra que verifica si el usuario acerto la letra y suma de aciertos que cuenta si el usuario completo la palabra
+        int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
+        int palabra_comparativa [cantidadElementos]; // un aaray vacio con la misma cantidad de espacios que la palabra misteriosa
+        int suma_aciertos = cantidadElementos - 1; // otra variable con la cantidad de elemntos de "palabra"
+
+        char palabra_del_usuario [50]; // La palabra que ingresa el usuario
+        char letra_jugador = '\0'; // Si el usuario ingresa una sola letra, guarda aqui para hacer la comparaciones correspondientes
+        char abecedario [27] = {0}; // Se usa como registro de las letra que es usuario utiliso
+
+        for (int i = 0; i < cantidadElementos; i++) { // Inicializa palabra_comparativa, rellenado todo los espacios con 0
+            palabra_comparativa[i] = 0;
+        }
+
+        do{
+
+            printf("\n\n");
+            hombre_ahorcado (contador);
+
+            for (int k = 0; k < cantidadElementos-1; k++) { //For que se repite tantas veces como letras tenga palabra.
+                if (palabra_comparativa[k] == 1){             
+                    printf("%c ", palabra[k]); // Imprime la letra si está adivinada
+                }                                         
+                else{
+                    printf("_ "); // Imprime un _ si la letra aun no se adivino
+                }
+            }
+
+            printf("Letras usadas: ");
+            for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
+            {
+                printf("%c, ", abecedario[j]);
+            }
+
+            do{
+                printf("\n\nIngresa una letra o la palabra: "); 
+                scanf("%s", &palabra_del_usuario);   // usuario igresa una letra o palabra (la palabra solo cuenta si es igual de larga que la palabra el juego)
+
+                   if   ((strlen(palabra_del_usuario)) == (cantidadElementos-1)) { // Verifica si la entrada es una palabra es tan larga como la cantidad de letras de la palabra del juego
+
+                        if (strncmp(palabra, palabra_del_usuario, cantidadElementos - 1) == 0){ //compara las cadenas(palabra del usuario, con la palabra del juego) y ve si son iguales
+                                suma_aciertos = 0;
+                        }
+                        else {
+                            contador++; //si erro la palabra le suma 1 error
+                            printf("\n\nfallaste.\n"); // el mensaje
+                            break;
+                        }
+                    }
+
+                    else if ((strlen(palabra_del_usuario))   <  (cantidadElementos-1) || (strlen(palabra_del_usuario))   >  (cantidadElementos-1)) // si el usuario ingreso 2 o mas letras por error y no queria enviar una palabra le envia un mensaje de error
+                    {
+                        printf("\n\nPor favor, ingresa solo una letra.\n"); // el mensaje
+                    }
+
+                    if ((strlen(palabra_del_usuario)) == 1) //verifica que el array tenga un solo elemnto
+                    {
+                        letra_jugador = palabra_del_usuario[0]; // guarda el elemento el la variable letrajugador
+                    }
+
+                    size_t longitud = sizeof(palabra_del_usuario) / sizeof(palabra_del_usuario[0]);// Obtener la longitud del array
+                    memset(palabra_del_usuario, '\0', longitud);// Vaciar el array estableciendo todos los elementos en '\0'
+
+            }while (!isalpha(letra_jugador)); //verifica que el jugador ingrese una sola letra
+
+                verificador = 0;
+
+                for (int i = 0; i < cantidadElementos; i++) {                //For que se repite tantas veces como letras tenga palabra
+                    if (tolower(palabra[i]) == tolower(letra_jugador)) {     //verifica si el usuario ingreso una letra que se encuetra en "palabra"
+                        if (palabra_comparativa[i] == 0) {                   //si en el arreglo palabra_comparativa[i] esta en cero le guardo un 1, claro esto si la letra se encuientra en palabra,
+                            palabra_comparativa[i] = 1;                      // esto solo se va a hacer una sola vez y sirve para no hacer multiples decrementos en suma_aciertos
+                            suma_aciertos--;
+                            verificador = 1;
+                        } else {
+                            verificador = 2;
+                        }
+                    }
+                }   
+
+            if (verificador != 2) { // Si el usuario ingreso 2 veces la misma letra se almacenara para que no pueda repetirla
+                abecedario[aux_2] = tolower(letra_jugador);// <======================================== poner que muestre en pantalla las letras que el usuari ya ingreso xd
+                aux_2++;
+            }
+
+
+        if (verificador == 0){
+            contador++;
+        }
+
+        erase();
+
+        }  while (contador <= 6 && suma_aciertos > 0);
+
+
+
+
+        if (contador == 7){
+            hombre_ahorcado(7);
+            printf(" \033[38;2;251;229;173mPerdiste\n");
             menu();
         }
+
+        else {
+                for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
+                printf("%c ", palabra[k]);
+                }
+                printf("\n");
+                printf("¡Bien!");
+                streak;
+        }
+            }
+}
+
+void PistasYpalabra(int tag) {
+    FILE *filePointer = fopen("Palabras.dat", "r");
+
+    if (filePointer == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return;
+    }
+
+    // Busca la línea correspondiente al tag
+    for (int i = 0; i < tag; ++i) {
+        if (fgets(palabra, sizeof(palabra), filePointer) == NULL) {
+            printf("Error: No se encontró la palabra para el tag %d.\n", tag);
+            fclose(filePointer);
+        }
+    }
+
+
+    // Elimina el salto de línea al final de la palabra
+    size_t length = strlen(palabra);
+    if (length > 0 && palabra[length - 1] == '\n') {
+        palabra[length - 1] = '\0';
     }
 }
+
+void HoyoEnUno() {
+    // Generar un valor aleatorio entre 1 y 15 para x
+    int x = rand() % 15 + 1;
+
+    // Calcular el valor de x según la fórmula dada
+    int tag = 106 + (x - 1) * 3;
+
+    PistasYpalabra(tag + 1);
+    printf("Pista N° 1: %s", palabra);
+
+    PistasYpalabra(tag + 2);
+    printf("Pista N° 2: %s", palabra);
+
+    PistasYpalabra(tag);
+
+    printf("\n\n");
+    hombre_ahorcado(0); // Muestra la imagen inicial del ahorcado
+
+    // Imprime la palabra oculta
+    for (int k = 0; k < strlen(palabra); k++) {
+        printf("_ ");
+    }
+
+    char palabra_del_usuario[50];
+    printf("\n\nIngresa la palabra completa: ");
+    scanf("%s", palabra_del_usuario);
+
+    if (strncmp(palabra, palabra_del_usuario, strlen(palabra)) == 0) {
+        printf("\n\033[38;2;251;229;173Ganaste\n");
+    } else {
+        printf("\n\033[38;2;251;229;173Perdiste\n");
+        hombre_ahorcado(7); // Muestra la imagen completa del ahorcado
+    }
+}
+
+
 
 
 /*
