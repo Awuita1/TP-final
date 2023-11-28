@@ -1,0 +1,1332 @@
+    //------------------------------------librerias-----------------------------------------------------------
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
+    #include <unistd.h>
+    #include <stdbool.h>
+    #include <time.h>
+    #include <ctype.h>
+    //------------------------------------funciones-----------------------------------------------------------
+
+// <=====-----=====-----=====-----=====
+struct player{
+    char nombre[50];
+    float puntuacion;
+};
+
+    //Limpia la el Buffer
+    void limpiarBuffer();
+
+    //Limpia la pantalla
+    void erase();
+
+    // Espera hasta que se presione "Enter" o se alcance el final del archivo
+    void precionar_enter();
+
+    //Subprograma que genrera el menu, para que el usuario navegue
+    void menu();
+
+    //Subprograma del juego
+    void juegar(); 
+
+    //<=====-----=====-----=====-----=====
+    void clasico();
+
+    //<=====-----=====-----=====-----=====
+    void arcade();
+
+    //<=====-----=====-----=====-----=====
+    void star_classico(int eleccion);
+
+    //<=====-----=====-----=====-----=====
+    void Perdiste();
+
+    void victoria();
+
+    void hombre_ahorcado (int contador); // contiene las animaciones del hombre_ahorcado
+
+    void star_Papa_Caliente();
+
+    void star_AhorcadoRush();
+
+    void PistasYpalabra(int tag);
+
+    void precionar_enter(); // Espera hasta que se presione "Enter"
+
+    //
+    char palabra[50]; // variable global, para usar en todos los modos de juego
+    int tiempo_termino = 0; 
+
+
+    void explicación();
+
+
+    void puntuacion();
+
+
+    void ObtenerPalabra(int tag);
+
+
+    char* espacios();
+
+
+    int dificultad();
+
+
+    void haga_elec();
+    void texto_menu_principal();
+    void texto_menu_jugar();
+
+//--------------modos arcade--------------
+void HoyoEnUno();
+void AhorcadoRush();
+//--------------modos arcade--------------
+
+//--------------eleccion de modo de juego--------------
+
+//-------------elem del juego----------------
+void PistasYpalabra();
+//-------------elem del juego----------------
+
+//----------------Pantallas de Game Over ----------------
+void HoyoEnUnoGameOver(char GameOver[50]);
+void AhorcadoRushGameOver(char GameOver[50]);
+//----------------Pantallas de Game Over ----------------
+
+
+    //------------------------------------main-----------------------------------------------------------
+    int main(){
+
+        srand(time(NULL));
+        struct player p;
+        erase();
+        menu();
+
+        return 0;
+
+    }
+    //------------------------------------funciones_desarrolladas-----------------------------------------------------------
+
+
+    //Limpia la pantalla
+    void erase(){
+    printf("\033[2J"); // Borra la pantalla
+    printf("\033[H");  // Mueve el cursor al principio
+    }
+
+
+    //Limpia la el Buffer
+    void limpiarBuffer() {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+
+
+    // Espera hasta que se presione "Enter" o se alcance el final del archivo
+    void precionar_enter(){
+    int c;
+    do {
+        c = getchar();
+    } while (c != '\n'); 
+    }
+
+
+    //Subprograma que genrera el menu, para que el usuario navegue
+    void menu(){
+
+    int elecion = 0;
+    /*texto_menu(); //Animacion de texto*/
+    
+    texto_menu_principal();
+    haga_elec();
+    
+    scanf("%d", &elecion);
+
+    switch (elecion) {
+    case 1:
+        erase();
+        limpiarBuffer();
+        juegar();
+        break;
+
+    case 2:
+        erase();
+        limpiarBuffer();
+        //reglas();
+        break;
+
+    case 3:
+        erase();
+        limpiarBuffer();
+        //record(); 
+        break;
+
+    case 0:
+        erase();
+        //texto_salida();
+        exit(0); // Cierra el programa con código de salida 0
+        break;
+
+        default:
+        erase();
+        menu();
+        }
+    }
+
+
+    void juegar() {
+        
+        int elecion = 0;
+
+        printf("\n\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n");
+        printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego ||                    \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|                                                            |\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n");
+        printf("    \033[38;2;251;229;173m|    1- Clasico.                                             \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|    2- Arcade.                                              \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
+        printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+        printf(" Ingrese un numero para hacer una eleccion.\n");
+        printf(" Su elecion es: "); 
+
+        scanf("%d", &elecion);
+
+        switch (elecion) {
+        case 1:
+            erase();
+            limpiarBuffer();
+            clasico();
+            break;
+        
+        case 2:
+
+            erase();
+            limpiarBuffer();
+            arcade();
+            break;
+
+        case 0:
+            erase();
+            limpiarBuffer();
+            menu(); 
+            break;
+
+        default:
+            erase();
+            printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
+            juegar();
+        }
+    }
+
+
+    void clasico(){
+
+        int elecion = 0;
+        int tag = 0;
+        srand(time(NULL));
+        
+        printf("\n\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n");
+        printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego 'Classico' ||                    \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|                                                            |\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n");
+        printf("    \033[38;2;251;229;173m|    Elija su dificultad:                                    |\n");
+        printf("    \033[38;2;251;229;173m|    1- Facil. (4 a 5 letras)                                              \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|    2- Media. (6 a 9 letras)                                             \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|    3- Dificil. (10 a 13)                                             \033[38;2;251;229;173m|\n");   
+        printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
+        printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+        printf(" Ingrese un numero para hacer una eleccion.\n");
+        printf(" Su elecion es: "); 
+
+        scanf("%d", &elecion);
+
+        switch (elecion) {
+        case 1:
+            erase();
+            limpiarBuffer();
+            tag = rand() % 36;
+            ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+            star_classico(elecion);
+            break;
+        
+        case 2:
+            erase();
+            limpiarBuffer();
+            tag = 36 + rand() % 36;
+            ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+            star_classico(elecion);
+            break;
+
+        case 3:
+            erase();
+            limpiarBuffer();
+            tag = 71 + rand() % 36;;
+            ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+
+                    // Imprimir la palabra
+                    printf("%s\n", palabra);
+
+            star_classico(elecion);
+            break;
+
+        case 0:
+            erase();
+            limpiarBuffer();
+            juegar(); 
+            break;
+
+        default:
+            erase();
+            printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
+            clasico();
+        }
+    }
+
+
+    void ObtenerPalabra(int tag) {
+    FILE *archivo_pistas = fopen("Palabras.dat", "r");
+
+    if (archivo_pistas == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return;
+    }
+
+    // Busca la línea correspondiente al tag
+    for (int i = 0; i < tag; ++i) {
+        if (fgets(palabra, sizeof(palabra), archivo_pistas) == NULL) {
+            printf("Error: No se encontró la palabra para el tag %d.\n", tag);
+            fclose(archivo_pistas);
+            return;  // Añadido para salir de la función si hay un error
+        }
+    }
+
+    // Elimina el salto de línea al final de la palabra
+    size_t length = strlen(palabra);
+    if (length > 0 && palabra[length - 1] == '\n') {
+        palabra[length - 1] = '\0';
+    }
+    fclose(archivo_pistas);
+}
+
+
+    void arcade(){
+        
+        int elecion = 0;
+        
+        printf("\n\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n");
+        printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| Modo de juego 'Arcade' ||                    \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|                                                            |\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n");
+        printf("    \033[38;2;251;229;173m|    Elija su Modo de Juego:                                    |\n");
+        printf("    \033[38;2;251;229;173m|    1- Hoyo en 1                                             \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|    2- Boos Rush                                            \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|    3- Papa caliente                                           \033[38;2;251;229;173m|\n");   
+        printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n");
+        printf("    \033[38;2;251;229;173m|    0- Atras.                                               \033[38;2;251;229;173m|\n");
+        printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+        printf(" Ingrese un numero para hacer una eleccion.\n");
+        printf(" Su elecion es: "); 
+
+        scanf("%d", &elecion);
+
+        switch (elecion) {
+
+        case 1:
+            erase();
+            limpiarBuffer();
+            HoyoEnUno();
+            break;
+
+        case 2:
+            erase();
+            limpiarBuffer();
+            AhorcadoRush();
+            break;
+
+        case 3:
+            erase();
+            limpiarBuffer();
+            star_Papa_Caliente();
+            break;
+
+        case 0:
+            erase();
+            limpiarBuffer();
+            juegar(); 
+            break;
+
+        default:
+            erase();
+            printf("\n\n Elección no válida. Por favor, intente nuevamente.\n");
+            arcade();
+            }
+    }
+
+
+    void Perdiste(){
+            hombre_ahorcado(7);
+            printf(" \033[38;2;251;229;173mPerdiste\n");
+    }
+
+
+    void victoria(){
+            printf(" \033[38;2;251;229;173mGanaste\n");
+    }
+
+
+    void hombre_ahorcado (int contador){
+
+        if (contador == 0)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║          \n");
+        printf("   ║          \n");
+        printf("   ║          \n");
+        printf(" █████    \n\n\n");
+        }
+        if (contador == 1)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║          \n");
+        printf("   ║          \n");
+        printf(" █████    \n\n\n");
+        }
+            if (contador == 2)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║     |    \n");
+        printf("   ║          \n");
+        printf(" █████    \n\n\n");
+        }
+            if (contador == 3)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║    /|    \n");
+        printf("   ║          \n");
+        printf(" █████    \n\n\n");
+        }
+            if (contador == 4)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║    /|\\  \n");
+        printf("   ║          \n");
+        printf(" █████    \n\n\n");
+        }
+            if (contador == 5)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║    /|\\  \n");
+        printf("   ║    /     \n");
+        printf(" █████    \n\n\n");
+        }
+            if (contador == 6)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║    /|\\  \n");
+        printf("   ║    / \\  \n");
+        printf(" █████    \n\n\n");
+        }
+
+        if (contador == 7)
+        {
+        printf("   ╔═════╗    \n");
+        printf("   ║     |    \n");
+        printf("   ║     O    \n");
+        printf("   ║    ~~~   \n");
+        printf("   ║    /|\\  \n");
+        printf(" █████  / \\  \n\n\n");
+        }
+
+    }
+
+
+    void star_classico(int eleccion) {
+
+        int contador = 0, verificador = 0, aux = 0, aux_2 = 0; // una variable de contador , otra que verifica si el usuario acerto la letra y suma de aciertos que cuenta si el usuario completo la palabra
+        int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
+        int palabra_comparativa [cantidadElementos]; // un aaray vacio con la misma cantidad de espacios que la palabra misteriosa
+        int suma_aciertos = cantidadElementos - 1; // otra variable con la cantidad de elemntos de "palabra"
+
+        char palabra_del_usuario [50]; // La palabra que ingresa el usuario
+        char letra_jugador = '\0'; // Si el usuario ingresa una sola letra, guarda aqui para hacer la comparaciones correspondientes
+        char abecedario [27] = {0}; // Se usa como registro de las letra que es usuario utiliso
+
+        for (int i = 0; i < cantidadElementos; i++) { // Inicializa palabra_comparativa, rellenado todo los espacios con 0
+            palabra_comparativa[i] = 0;
+        }
+
+        do{
+            
+            printf("\n\n");
+            hombre_ahorcado (contador);
+
+            for (int k = 0; k < cantidadElementos-1; k++) { //For que se repite tantas veces como letras tenga palabra.
+                if (palabra_comparativa[k] == 1){             
+                    printf("%c ", palabra[k]); // Imprime la letra si está adivinada
+                }                                         
+                else{
+                    printf("_ "); // Imprime un _ si la letra aun no se adivino
+                }
+            }
+            
+            printf("Letras usas: ");
+            for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
+            {
+                printf("%c, ", abecedario[j]);
+            }
+
+            do{
+                printf("\n\nIngresa una letra o la palabra: "); 
+                scanf("%s", &palabra_del_usuario);   // usuario igresa una letra o palabra (la palabra solo cuenta si es igual de larga que la palabra el juego)
+
+                if   ((strlen(palabra_del_usuario)) == (cantidadElementos-1)) { // Verifica si la entrada es una palabra es tan larga como la cantidad de letras de la palabra del juego
+
+                        if (strncmp(palabra, palabra_del_usuario, cantidadElementos - 1) == 0){ //compara las cadenas(palabra del usuario, con la palabra del juego) y ve si son iguales
+                                suma_aciertos = 0;
+                        }
+                        else {
+                            contador++; //si erro la palabra le suma 1 error
+                            printf("\n\nfallaste.\n"); // el mensaje
+                            break;
+                        }
+                    }
+
+                    else if ((strlen(palabra_del_usuario))   <  (cantidadElementos-1) || (strlen(palabra_del_usuario))   >  (cantidadElementos-1)) // si el usuario ingreso 2 o mas letras por error y no queria enviar una palabra le envia un mensaje de error
+                    {
+                        printf("\n\nPor favor, ingresa solo una letra.\n"); // el mensaje
+                    }
+
+                    if ((strlen(palabra_del_usuario)) == 1) //verifica que el array tenga un solo elemnto
+                    {
+                        letra_jugador = palabra_del_usuario[0]; // guarda el elemento el la variable letrajugador
+                    }
+
+                    size_t longitud = sizeof(palabra_del_usuario) / sizeof(palabra_del_usuario[0]);// Obtener la longitud del array
+                    memset(palabra_del_usuario, '\0', longitud);// Vaciar el array estableciendo todos los elementos en '\0'
+
+            }while (!isalpha(letra_jugador)); //verifica que el jugador ingrese una sola letra
+        
+                verificador = 0;
+
+                for (int i = 0; i < cantidadElementos; i++) {                //For que se repite tantas veces como letras tenga palabra
+                    if (tolower(palabra[i]) == tolower(letra_jugador)) {     //verifica si el usuario ingreso una letra que se encuetra en "palabra"
+                        if (palabra_comparativa[i] == 0) {                   //si en el arreglo palabra_comparativa[i] esta en cero le guardo un 1, claro esto si la letra se encuientra en palabra,
+                            palabra_comparativa[i] = 1;                      // esto solo se va a hacer una sola vez y sirve para no hacer multiples decrementos en suma_aciertos
+                            suma_aciertos--;
+                            verificador = 1;
+                        } else {
+                            verificador = 2;
+                        }
+                    }
+                }   
+
+            if (verificador != 2) { // Si el usuario ingreso 2 veces la misma letra se almacenara para que no pueda repetirla
+                abecedario[aux_2] = tolower(letra_jugador);// <======================================== poner que muestre en pantalla las letras que el usuari ya ingreso xd
+                aux_2++;
+            }
+
+
+        if (verificador == 0){
+            contador++;
+        }
+
+        erase();
+
+        }  while (contador <= 6 && suma_aciertos > 0);
+
+        
+
+
+        if (contador == 7){
+            Perdiste(); //<__________________ programar
+        }
+
+        else {
+                for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
+                printf("%c ", palabra[k]);
+                }
+                //<================== poner un mensaje que le diga al usuario que apriente enter para continuar
+            victoria(); //<__________________ programar
+        }
+
+    } 
+
+    void star_AhorcadoRush(){
+        int contador = 0,streak = 1;
+        for (int i = 0; i < 5; i++){
+            printf("Racha: %d\n", i);
+
+            int verificador = 0, aux = 0, aux_2 = 0; // una variable de contador , otra que verifica si el usuario acerto la letra y suma de aciertos que cuenta si el usuario completo la palabra
+            int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
+            int palabra_comparativa [cantidadElementos]; // un aaray vacio con la misma cantidad de espacios que la palabra misteriosa
+            int suma_aciertos = cantidadElementos - 1; // otra variable con la cantidad de elemntos de "palabra"
+
+            char palabra_del_usuario [50]; // La palabra que ingresa el usuario
+            char letra_jugador = '\0'; // Si el usuario ingresa una sola letra, guarda aqui para hacer la comparaciones correspondientes
+            char abecedario [27] = {0}; // Se usa como registro de las letra que es usuario utiliso
+
+            for (int i = 0; i < cantidadElementos; i++) { // Inicializa palabra_comparativa, rellenado todo los espacios con 0
+                palabra_comparativa[i] = 0;
+            }
+
+            do{
+
+                printf("\n\n");
+                hombre_ahorcado (contador);
+
+                for (int k = 0; k < cantidadElementos-1; k++) { //For que se repite tantas veces como letras tenga palabra.
+                    if (palabra_comparativa[k] == 1){             
+                        printf("%c ", palabra[k]); // Imprime la letra si está adivinada
+                    }                                         
+                    else{
+                        printf("_ "); // Imprime un _ si la letra aun no se adivino
+                    }
+                }
+
+                printf("Letras usadas: ");
+                for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
+                {
+                    printf("%c, ", abecedario[j]);
+                }
+
+                do{
+                    printf("\n\nIngresa una letra o la palabra: "); 
+                    scanf("%s", &palabra_del_usuario);   // usuario igresa una letra o palabra (la palabra solo cuenta si es igual de larga que la palabra el juego)
+
+                    if   ((strlen(palabra_del_usuario)) == (cantidadElementos-1)) { // Verifica si la entrada es una palabra es tan larga como la cantidad de letras de la palabra del juego
+
+                            if (strncmp(palabra, palabra_del_usuario, cantidadElementos - 1) == 0){ //compara las cadenas(palabra del usuario, con la palabra del juego) y ve si son iguales
+                                    suma_aciertos = 0;
+                            }
+                            else {
+                                contador++; //si erro la palabra le suma 1 error
+                                printf("\n\nfallaste.\n"); // el mensaje
+                                break;
+                            }
+                        }
+
+                        else if ((strlen(palabra_del_usuario))   <  (cantidadElementos-1) || (strlen(palabra_del_usuario))   >  (cantidadElementos-1)) // si el usuario ingreso 2 o mas letras por error y no queria enviar una palabra le envia un mensaje de error
+                        {
+                            printf("\n\nPor favor, ingresa solo una letra.\n"); // el mensaje
+                        }
+
+                        if ((strlen(palabra_del_usuario)) == 1) //verifica que el array tenga un solo elemnto
+                        {
+                            letra_jugador = palabra_del_usuario[0]; // guarda el elemento el la variable letrajugador
+                        }
+
+                        size_t longitud = sizeof(palabra_del_usuario) / sizeof(palabra_del_usuario[0]);// Obtener la longitud del array
+                        memset(palabra_del_usuario, '\0', longitud);// Vaciar el array estableciendo todos los elementos en '\0'
+
+                }while (!isalpha(letra_jugador)); //verifica que el jugador ingrese una sola letra
+
+                    verificador = 0;
+
+                    for (int i = 0; i < cantidadElementos; i++) {                //For que se repite tantas veces como letras tenga palabra
+                        if (tolower(palabra[i]) == tolower(letra_jugador)) {     //verifica si el usuario ingreso una letra que se encuetra en "palabra"
+                            if (palabra_comparativa[i] == 0) {                   //si en el arreglo palabra_comparativa[i] esta en cero le guardo un 1, claro esto si la letra se encuientra en palabra,
+                                palabra_comparativa[i] = 1;                      // esto solo se va a hacer una sola vez y sirve para no hacer multiples decrementos en suma_aciertos
+                                suma_aciertos--;
+                                verificador = 1;
+                            } else {
+                                verificador = 2;
+                            }
+                        }
+                    }   
+
+                if (verificador != 2) { // Si el usuario ingreso 2 veces la misma letra se almacenara para que no pueda repetirla
+                    abecedario[aux_2] = tolower(letra_jugador);// <======================================== poner que muestre en pantalla las letras que el usuari ya ingreso xd
+                    aux_2++;
+                }
+
+
+            if (verificador == 0){
+                contador++;
+            }
+
+            erase();
+
+            }  while (contador <= 6 && suma_aciertos > 0);
+
+
+
+
+            if (contador == 7){
+                hombre_ahorcado(7);
+                printf(" \033[38;2;251;229;173mPerdiste\n");
+                menu();
+            }
+
+            else {
+                    for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
+                    printf("%c ", palabra[k]);
+                    }
+                    printf("\n");
+                    printf("¡Bien!");
+                    streak;
+            }
+                }
+    }
+
+
+    void star_Papa_Caliente(){
+
+        FILE *archivo;
+        archivo = fopen("tiempo_termino.txt", "w");
+        if (!archivo) {
+            printf("Error al abrir el archivo.\n");
+        }
+        fprintf(archivo, "0");
+        fclose(archivo);
+
+
+        archivo = fopen("tiempo_termino.txt", "r");
+        if (!archivo) {
+            printf("Error al abrir el archivo.\n");
+        }
+
+        int tiempo_termino = 0;
+        fscanf(archivo, "%d", &tiempo_termino);
+        
+
+        int tag = 36 + rand() % 36;
+        ObtenerPalabra(tag);
+
+        int contador = 0, verificador = 0, aux = 0, aux_2 = 0; // una variable de contador , otra que verifica si el usuario acerto la letra y suma de aciertos que cuenta si el usuario completo la palabra
+        int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
+        int palabra_comparativa [cantidadElementos]; // un aaray vacio con la misma cantidad de espacios que la palabra misteriosa
+        int suma_aciertos = cantidadElementos - 1; // otra variable con la cantidad de elemntos de "palabra"
+
+        char palabra_del_usuario [50]; // La palabra que ingresa el usuario
+        char letra_jugador = '\0'; // Si el usuario ingresa una sola letra, guarda aqui para hacer la comparaciones correspondientes
+        char abecedario [27] = {0}; // Se usa como registro de las letra que es usuario utiliso
+
+        for (int i = 0; i < cantidadElementos; i++) { // Inicializa palabra_comparativa, rellenado todo los espacios con 0
+            palabra_comparativa[i] = 0;
+        }
+
+            // Lanzar el segundo programa usando la función system
+            system("mintty -e ./temporizador &");
+
+        
+        do{
+            rewind(archivo);
+            fscanf(archivo, "%d", &tiempo_termino);
+
+
+
+
+            if (tiempo_termino != 1)
+            {
+            printf("\n\n");
+            hombre_ahorcado (contador);
+                
+                        for (int k = 0; k < cantidadElementos-1; k++) { //For que se repite tantas veces como letras tenga palabra.
+                if (palabra_comparativa[k] == 1){             
+                    printf("%c ", palabra[k]); // Imprime la letra si está adivinada
+                }                                         
+                else{
+                    printf("_ "); // Imprime un _ si la letra aun no se adivino
+                }
+            }
+            
+            printf("Letras usas: ");
+            for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
+            {
+                printf("%c, ", abecedario[j]);
+            }
+            
+            
+
+
+            do{
+                
+                printf("\n\nIngresa una letra o la palabra: "); 
+                scanf("%s", &palabra_del_usuario);   // usuario igresa una letra o palabra (la palabra solo cuenta si es igual de larga que la palabra el juego)
+
+                if   ((strlen(palabra_del_usuario)) == (cantidadElementos-1)) { // Verifica si la entrada es una palabra es tan larga como la cantidad de letras de la palabra del juego
+
+                        if (strncmp(palabra, palabra_del_usuario, cantidadElementos - 1) == 0){ //compara las cadenas(palabra del usuario, con la palabra del juego) y ve si son iguales
+                                suma_aciertos = 0;
+                        }
+                        else {
+                            contador++; //si erro la palabra le suma 1 error
+                            printf("\n\nfallaste.\n"); // el mensaje
+                            break;
+                        }
+                    }
+
+                    else if ((strlen(palabra_del_usuario))   <  (cantidadElementos-1) || (strlen(palabra_del_usuario))   >  (cantidadElementos-1)) // si el usuario ingreso 2 o mas letras por error y no queria enviar una palabra le envia un mensaje de error
+                    {
+                        printf("\n\nPor favor, ingresa solo una letra.\n"); // el mensaje
+                    }
+
+                    if ((strlen(palabra_del_usuario)) == 1) //verifica que el array tenga un solo elemnto
+                    {
+                        letra_jugador = palabra_del_usuario[0]; // guarda el elemento el la variable letrajugador
+                    }
+
+                    size_t longitud = sizeof(palabra_del_usuario) / sizeof(palabra_del_usuario[0]);// Obtener la longitud del array
+                    memset(palabra_del_usuario, '\0', longitud);// Vaciar el array estableciendo todos los elementos en '\0'
+
+            }while (!isalpha(letra_jugador)); //verifica que el jugador ingrese una sola letra
+        
+                verificador = 0;
+
+                for (int i = 0; i < cantidadElementos; i++) {                //For que se repite tantas veces como letras tenga palabra
+                    if (tolower(palabra[i]) == tolower(letra_jugador)) {     //verifica si el usuario ingreso una letra que se encuetra en "palabra"
+                        if (palabra_comparativa[i] == 0) {                   //si en el arreglo palabra_comparativa[i] esta en cero le guardo un 1, claro esto si la letra se encuientra en palabra,
+                            palabra_comparativa[i] = 1;                      // esto solo se va a hacer una sola vez y sirve para no hacer multiples decrementos en suma_aciertos
+                            suma_aciertos--;
+                            verificador = 1;
+                        } else {
+                            verificador = 2;
+                        }
+                    }
+                }   
+
+            if (verificador != 2) { // Si el usuario ingreso 2 veces la misma letra se almacenara para que no pueda repetirla
+                abecedario[aux_2] = tolower(letra_jugador);//Guarda un registro de las letras que ya ingreso el usuario 
+                aux_2++;
+            }
+
+
+            if (verificador == 0){
+                contador++;
+            }
+
+            erase();
+
+            }
+        }  while (contador <= 6 && suma_aciertos > 0 && tiempo_termino != 1);
+
+        
+        if (tiempo_termino == 1){
+                fclose(archivo);
+            Perdiste(); //<__________________ programar
+        }
+
+        else {
+        if (contador == 7){
+            fclose(archivo);
+            archivo = fopen("tiempo_termino.txt", "w");
+            if (!archivo) {
+            printf("Error al abrir el archivo.\n");
+            }
+            fprintf(archivo, "2");
+            fclose(archivo);
+            Perdiste(); //<__________________ programar
+
+        }
+
+        else {
+
+            fclose(archivo);
+            archivo = fopen("tiempo_termino.txt", "w");
+            if (!archivo) {
+            printf("Error al abrir el archivo.\n");
+            }
+            fprintf(archivo, "2");
+            fclose(archivo);
+
+                for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
+                printf("%c ", palabra[k]);
+                }
+                    fclose(archivo);
+                //<================== poner un mensaje que le diga al usuario que apriente enter para continuar
+            victoria(); //<__________________ programar
+
+        }
+        }
+        }
+
+
+void texto_menu_principal(){
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahorcado ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                          A                                 \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m||   orcado ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                          Ah                                \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m||    rcado ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                          Aho                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| A   cado ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                           hor                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ah   ado ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                             rca                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Aho   do ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                             rca                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahor   o ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                              cad                           \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahorc    ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                               ado                          \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahorca   ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                do                          \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahorcad  ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m");  
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                 o                          \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahorcad  ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+    erase();
+
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                       \033[38;2;230;126;34m|| Ahorcado ||                       \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- Jugar.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Reglas.                                              \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    3- Ranking.                                             \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    -------------                                           |\n");
+    printf("    \033[38;2;251;229;173m|    0- Salir.                                               \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m"); 
+    usleep(70000); // Pausa de 7 milisegundos (70000 microsegundos)
+}
+
+void haga_elec(){
+    printf("    \033[38;2;251;229;173m|    Su elecion es:                                          |\n\033[0m");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\033[0m"); 
+    printf("\033[2A");
+    printf("\033[24C");
+}
+
+void texto_menu_jugar(){}
+
+// <■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>
+void HoyoEnUnoGameOver(char GameOver[50]){
+    int aux;
+    printf("\n\n");
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| %s ||                         \033[38;2;251;229;173m|\n", GameOver);
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- jugar otra vez.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Volver al menu.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+
+    printf(" Ingrese un numero para hacer una eleccion.\n");
+    printf(" Su elecion es: "); 
+
+    scanf("%d",aux);
+    switch(aux){
+        case 1:
+            erase();
+            limpiarBuffer();
+            HoyoEnUno();
+            break;
+            
+        case 2:
+            erase();
+            limpiarBuffer();
+            menu();
+            break;
+
+        default:
+            HoyoEnUnoGameOver(GameOver);
+            break; 
+    }
+}
+
+// <■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>
+void AhorcadoRushGameOver(char GameOver[50]){
+    int aux;
+    printf("\n\n");
+    printf("\n\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|                                                            \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|                  \033[38;2;230;126;34m|| %s ||                          \033[38;2;251;229;173m|\n", GameOver);
+    printf("    \033[38;2;251;229;173m|                                                            |\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    1- jugar otra vez.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    2- Volver al menu.                                      \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|============================================================|\n\n\033[0m"); 
+
+
+    printf(" Ingrese un numero para hacer una eleccion.\n");
+    printf(" Su elecion es: "); 
+
+    scanf("%d",aux);
+    switch(aux){
+        case 1:
+            erase();
+            limpiarBuffer();
+            AhorcadoRush();
+            break;
+            
+        case 2:
+            erase();
+            limpiarBuffer();
+            menu();
+            break;
+
+        default:
+            HoyoEnUnoGameOver(GameOver);
+            break; 
+    }
+}
+
+// <■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>
+void HoyoEnUno() { 
+
+    // Generar un valor aleatorio entre 1 y 15 para x
+    int x = rand() % 15 + 1;
+    // Calcular el valor de x según la fórmula dada
+    int tag = 106 + (x - 1) * 3;
+
+    char GameOver[50], palabra_del_usuario[50];
+
+    while (strlen(palabra_del_usuario) < strlen(palabra))
+    {   
+        printf("\n\n");
+        hombre_ahorcado(0); // Muestra la imagen inicial del ahorcado
+
+        //imprimo los espacios de la palabra a adivinar
+        for (int k = 0; k < strlen(palabra)-1 ; k++) {
+            printf("_ ");
+        }
+        printf(" \n");
+
+
+        // imprimo las pistas
+        ObtenerPalabra(tag + 1);
+        printf("\nPista N° 1: %s\n", palabra);
+
+        ObtenerPalabra(tag + 2);
+        printf("Pista N° 2: %s\n", palabra);
+        // imprimo las pistas
+
+        //la variable global palabra se queda con la palabra a adivinar
+        ObtenerPalabra(tag);
+
+
+        printf("\n\nIngresa la palabra completa: ");
+        scanf("%s", palabra_del_usuario);
+
+        if (strlen(palabra_del_usuario) < 3){
+            printf("palabra muy corta, ingrese devuelta");
+
+            //salto al inicio de la funcion// <■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>
+                // Generar un valor aleatorio entre 1 y 15 para x
+            int x = rand() % 15 + 1;
+            // Calcular el valor de x según la fórmula dada
+            int tag = 106 + (x - 1) * 3;// <■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>
+
+        } else {
+            if (strncmp(palabra,palabra_del_usuario, strlen(palabra) - 1) == 0){
+                erase();
+                limpiarBuffer();
+                strcpy(GameOver, "Has ganado");
+                HoyoEnUnoGameOver(GameOver);
+            } else {
+                erase();
+                limpiarBuffer();
+                hombre_ahorcado(7);
+                strcpy(GameOver, "Has perdido");
+                HoyoEnUnoGameOver(GameOver);
+            }
+        }
+    }
+}
+
+
+// <■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>
+void AhorcadoRush(){
+
+    char GameOver[50];
+    int contador = 0,streak = 1;
+
+    for (int h = 0; h < 5; h++){
+        printf("Racha: %d\n", h);
+
+        int tag = 36 + rand() % 36;
+        ObtenerPalabra(tag); // Llamar a ObtenerPalabra con el array local
+
+        // Imprimir la palabra
+        printf("%s\n", palabra);
+
+        int verificador = 0, aux = 0, aux_2 = 0; // una variable de contador , otra que verifica si el usuario acerto la letra y suma de aciertos que cuenta si el usuario completo la palabra
+        int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
+        int palabra_comparativa [cantidadElementos]; // un aaray vacio con la misma cantidad de espacios que la palabra misteriosa
+        int suma_aciertos = cantidadElementos - 1; // otra variable con la cantidad de elemntos de "palabra"
+
+
+        char palabra_del_usuario [50]; // La palabra que ingresa el usuario
+        char letra_jugador = '\0'; // Si el usuario ingresa una sola letra, guarda aqui para hacer la comparaciones correspondientes
+        char abecedario [27] = {0}; // Se usa como registro de las letra que es usuario utiliso
+
+
+        for (int i = 0; i < cantidadElementos-1; i++) { // Inicializa palabra_comparativa, rellenado todo los espacios con 0
+            palabra_comparativa[i] = 0;
+        }
+
+        do{
+
+            printf("\n\n");
+            hombre_ahorcado (contador);
+
+            for (int k = 0; k < cantidadElementos-1; k++) { //For que se repite tantas veces como letras tenga palabra.
+                if (palabra_comparativa[k] == 1){             
+                    printf("%c ", palabra[k]); // Imprime la letra si está adivinada
+                }                                         
+                else{
+                    printf("_ "); // Imprime un _ si la letra aun no se adivino
+                }
+            }
+
+            printf("Letras usadas: ");
+            for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
+            {
+                printf("%c, ", abecedario[j]);
+            }
+
+            do{
+                printf("\n\nIngresa una letra o la palabra: "); 
+                scanf("%s", &palabra_del_usuario);   // usuario igresa una letra o palabra (la palabra solo cuenta si es igual de larga que la palabra el juego)
+
+                   if   ((strlen(palabra_del_usuario)) == (cantidadElementos-1)) { // Verifica si la entrada es una palabra es tan larga como la cantidad de letras de la palabra del juego
+
+                        if (strncmp(palabra, palabra_del_usuario, cantidadElementos - 1) == 0){ //compara las cadenas(palabra del usuario, con la palabra del juego) y ve si son iguales
+                                suma_aciertos = 0;
+                        }
+                        else {
+                            contador++; //si erro la palabra le suma 1 error
+                            printf("\n\nfallaste.\n"); // el mensaje
+                            break;
+                        }
+                    }
+
+                    else if ((strlen(palabra_del_usuario))   <  (cantidadElementos-1) || (strlen(palabra_del_usuario))   >  (cantidadElementos-1)) // si el usuario ingreso 2 o mas letras por error y no queria enviar una palabra le envia un mensaje de error
+                    {
+                        printf("\n\nPor favor, ingresa solo una letra.\n"); // el mensaje
+                    }
+
+                    if ((strlen(palabra_del_usuario)) == 1) //verifica que el array tenga un solo elemnto
+                    {
+                        letra_jugador = palabra_del_usuario[0]; // guarda el elemento el la variable letrajugador
+                    }
+
+                    size_t longitud = sizeof(palabra_del_usuario) / sizeof(palabra_del_usuario[0]);// Obtener la longitud del array
+                    memset(palabra_del_usuario, '\0', longitud);// Vaciar el array estableciendo todos los elementos en '\0'
+
+            }while (!isalpha(letra_jugador)); //verifica que el jugador ingrese una sola letra
+
+                verificador = 0;
+
+                for (int i = 0; i < cantidadElementos; i++) {                //For que se repite tantas veces como letras tenga palabra
+                    if (tolower(palabra[i]) == tolower(letra_jugador)) {     //verifica si el usuario ingreso una letra que se encuetra en "palabra"
+                        if (palabra_comparativa[i] == 0) {                   //si en el arreglo palabra_comparativa[i] esta en cero le guardo un 1, claro esto si la letra se encuientra en palabra,
+                            palabra_comparativa[i] = 1;                      // esto solo se va a hacer una sola vez y sirve para no hacer multiples decrementos en suma_aciertos
+                            suma_aciertos--;
+                            verificador = 1;
+                        } else {
+                            verificador = 2;
+                        }
+                    }
+                }   
+
+            if (verificador != 2) { // Si el usuario ingreso 2 veces la misma letra se almacenara para que no pueda repetirla
+                abecedario[aux_2] = tolower(letra_jugador);// <======================================== poner que muestre en pantalla las letras que el usuari ya ingreso xd
+                aux_2++;
+            }
+
+
+        if (verificador == 0){
+            contador++;
+        }
+
+        erase();
+
+        }  while (contador <= 6 && suma_aciertos > 0);
+
+
+
+
+        if (contador == 7){
+            hombre_ahorcado(7);
+            strcpy(GameOver, "Has perdido");
+            HoyoEnUnoGameOver(GameOver);
+        }
+
+        else {
+                for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
+                printf("%c ", palabra[k]);
+                }
+
+                printf("\n");
+                printf("¡Bien!");
+                streak;
+        }
+    }
+    strcpy(GameOver, "Has ganado");
+    HoyoEnUnoGameOver(GameOver);
+}
