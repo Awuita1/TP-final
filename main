@@ -9,13 +9,13 @@
 //------------------------------------librerias-----------------------------------------------------------
 
 //Estructura de player que guarda un nombre y su puntuacion
-struct player{
+struct Player{
     char nombre[15];
-    float puntuacion;
+    int puntuacion;
 };
 
-struct player player_record;
-
+struct Player player_record;
+struct Player player;
 // -----------------------------------------------------------Limpieza y mantenimiento-----------------------------------------------------------
 //Limpia la el Buffer
 void limpiarBuffer();
@@ -99,6 +99,15 @@ int puntuacion(int eleccion, int tiempo, int contador);
 
 void cantidad_de_tiempo(int eleccion);
 
+void rankingGuardar();
+
+void rankingIntercambiar();
+
+void rankingOrdenarPorPuntuacion();
+
+void rankingOrdenarArchivo(); 
+
+void ranking();
 
 
 // -----------------------------------------------------------Funciones Varias-----------------------------------------------------------
@@ -163,7 +172,7 @@ void menu(){
     case 3:
         erase();
         limpiarBuffer();
-        //record(); 
+        ranking();
         break;
 
     case 0:
@@ -747,6 +756,7 @@ void Star_classico(int eleccion) {
 
         victoria(); //<__________________ programar
     }
+    rankingGuardar();
 } 
 
 
@@ -1673,6 +1683,93 @@ void haga_elec(){
     printf("    \033[38;2;251;229;173m|============================================================|\n\033[0m"); 
     printf("\033[2A");
     printf("\033[24C");
+}
+
+void rankingGuardar(){
+    FILE *filepointer;
+    
+    filepointer = fopen("ranking.dat", "a+");
+
+    if (filepointer == NULL) {
+        printf("Error: el archivo no se ha podido abrir.\n");
+        menu();  // Supongo que esta función está definida en tu código
+    }
+
+    fprintf(filepointer, "%s %f\n",player_record.nombre, player_record.puntuacion );
+
+    fclose(filepointer);
+} 
+
+
+void rankingIntercambiar(struct Player *a, struct Player *b) {
+    struct Player temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void rankingOrdenarPorPuntuacion(struct Player registros[], int numRegistros) {
+    for (int i = 0; i < numRegistros - 1; i++) {
+        for (int j = 0; j < numRegistros - i - 1; j++) {
+            if (registros[j].puntuacion < registros[j + 1].puntuacion) {
+                rankingIntercambiar(&registros[j], &registros[j + 1]);
+            }
+        }
+    }
+}
+
+void rankingOrdenarArchivo() {
+    FILE *archivoEntrada = fopen("ranking.dat", "r");
+    if (archivoEntrada == NULL) {
+        printf("Error al abrir el archivo de entrada.\n");
+        return;
+    }
+
+    struct Player registros[100];  // Suponiendo un máximo de 100 registros
+    int numRegistros = 0;
+
+    // Leer registros del archivo
+    while (fscanf(archivoEntrada, "%s %d", registros[numRegistros].nombre, &registros[numRegistros].puntuacion) == 2) {
+        numRegistros++;
+    }
+
+    fclose(archivoEntrada);
+
+    // Ordenar los registros con el método de burbuja
+    rankingOrdenarPorPuntuacion(registros, numRegistros);
+
+    FILE *archivoSalida = fopen("ranking.dat", "w");  // Abrir en modo "a" para agregar al final
+    if (archivoSalida == NULL) {
+        printf("Error al abrir el archivo de salida.\n");
+        return;
+    }
+
+    // Escribir los registros ordenados al final del archivo
+    for (int i = 0; i < numRegistros; i++) {
+        fprintf(archivoSalida, "%s %d\n", registros[i].nombre, registros[i].puntuacion);
+    }
+
+    fclose(archivoSalida);
+}
+
+void ranking() {
+    rankingOrdenarArchivo();
+
+    FILE *filepointer = fopen("ranking.dat", "r");
+
+    if (filepointer == NULL) {
+        printf("Error al abrir el archivo.\n");
+        menu();
+    }
+
+    printf("Ranking:\n");
+
+    char linea[100];  // Ajusta el tamaño según tus necesidades
+
+    while (fgets(linea, sizeof(linea), filepointer) != NULL) {
+        printf("%s", linea);
+    }
+
+    fclose(filepointer);
 }
 
 // -----------------------------------------------------------Funciones Varias-----------------------------------------------------------
