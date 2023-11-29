@@ -1366,7 +1366,7 @@ void Star_Papa_Caliente(){
     }
     else {
         fclose(archivo);
-        archivo = fopen("tiempo_termino.txt", "w");
+        archivo = fopen("C", "w");
         if (!archivo) {
         printf("Error al abrir el archivo.\n");
         }
@@ -1695,7 +1695,7 @@ void rankingGuardar(){
         menu();  // Supongo que esta función está definida en tu código
     }
 
-    fprintf(filepointer, "%s %f\n",player_record.nombre, player_record.puntuacion );
+    fprintf(filepointer, "%s %d\n",player_record.nombre, player_record.puntuacion );
 
     fclose(filepointer);
 } 
@@ -1761,12 +1761,12 @@ void ranking() {
         menu();
     }
 
-    printf("Ranking:\n");
-
     char linea[100];  // Ajusta el tamaño según tus necesidades
+    int contador = 0;
 
-    while (fgets(linea, sizeof(linea), filepointer) != NULL) {
+    while (fgets(linea, sizeof(linea), filepointer) != NULL && contador < 10) {
         printf("%s", linea);
+        contador++;
     }
 
     fclose(filepointer);
