@@ -1,0 +1,16 @@
+void rankingImprimir(){
+    FILE *archivo = fopen("ranking.dat", "r");
+
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo.\n");
+        menu();
+    }
+
+    printf("Ranking:\n");
+
+    while (fscanf(archivo, "%s %d", player_record.nombre, &player_record.puntuacion) == 2) {
+        printf("Nombre: %s, Puntuacion: %f\n", player_record.nombre, player_record.puntuacion);
+    }
+
+    fclose(archivo);
+}
