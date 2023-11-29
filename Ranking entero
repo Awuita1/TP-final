@@ -1,0 +1,97 @@
+void rankingGuardar();
+void rankingIntercambiar(struct Player *a, struct Player *b);
+void rankingOrdenarPorPuntuacion(struct Player registros[], int numRegistros);
+void rankingOrdenarArchivo();
+void ranking();
+-----------------------antes del main-------------------------
+
+
+
+-----------------------desp del main-------------------------
+void rankingGuardar(){
+    FILE *filepointer;
+    
+    filepointer = fopen("ranking.dat", "a+");
+
+    if (filepointer == NULL) {
+        printf("Error: el archivo no se ha podido abrir.\n");
+        menu();  // Supongo que esta función está definida en tu código
+    }
+
+    fprintf(filepointer, "%s %f\n",player_record.nombre, player_record.puntuacion );
+
+    fclose(filepointer);
+} 
+
+
+void rankingIntercambiar(struct Player *a, struct Player *b) {
+    struct Player temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void rankingOrdenarPorPuntuacion(struct Player registros[], int numRegistros) {
+    for (int i = 0; i < numRegistros - 1; i++) {
+        for (int j = 0; j < numRegistros - i - 1; j++) {
+            if (registros[j].puntuacion < registros[j + 1].puntuacion) {
+                rankingIntercambiar(&registros[j], &registros[j + 1]);
+            }
+        }
+    }
+}
+
+void rankingOrdenarArchivo() {
+    FILE *archivoEntrada = fopen("ranking.dat", "r");
+    if (archivoEntrada == NULL) {
+        printf("Error al abrir el archivo de entrada.\n");
+        return;
+    }
+
+    struct Player registros[100];  // Suponiendo un máximo de 100 registros
+    int numRegistros = 0;
+
+    // Leer registros del archivo
+    while (fscanf(archivoEntrada, "%s %f", registros[numRegistros].nombre, &registros[numRegistros].puntuacion) == 2) {
+        numRegistros++;
+    }
+
+    fclose(archivoEntrada);
+
+    // Ordenar los registros con el método de burbuja
+    rankingOrdenarPorPuntuacion(registros, numRegistros);
+
+    FILE *archivoSalida = fopen("ranking.dat", "w");  // Abrir en modo "a" para agregar al final
+    if (archivoSalida == NULL) {
+        printf("Error al abrir el archivo de salida.\n");
+        return;
+    }
+
+    // Escribir los registros ordenados al final del archivo
+    for (int i = 0; i < numRegistros; i++) {
+        fprintf(archivoSalida, "%s %f\n", registros[i].nombre, registros[i].puntuacion);
+    }
+
+    fclose(archivoSalida);
+}
+
+void ranking() {
+    char caracter;
+
+    rankingOrdenarArchivo();
+
+    FILE *archivo = fopen("ranking.dat", "r");
+    
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo.\n");
+        menu();
+    }
+
+    printf("Ranking:\n");
+
+    while ((caracter = fgetc(archivo)) != EOF) {
+        putchar(caracter);
+    }
+
+    fclose(archivo);
+}
+-----------------------desp del main-------------------------
