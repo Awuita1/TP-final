@@ -95,9 +95,10 @@ char palabra[50];
 
 void haga_elec();
 
-int puntuacion(int eleccion, int tiempo);
+int puntuacion(int eleccion, int tiempo, int contador);
 
 void cantidad_de_tiempo(int eleccion);
+
 
 
 // -----------------------------------------------------------Funciones Varias-----------------------------------------------------------
@@ -613,27 +614,35 @@ void Star_classico(int eleccion) {
     int cantidadElementos = strlen(palabra); // consigue la cantidad de elemntos de "palabra"
     int palabra_comparativa [cantidadElementos]; // un aaray vacio con la misma cantidad de espacios que la palabra misteriosa
     int suma_aciertos = cantidadElementos - 1; // otra variable con la cantidad de elemntos de "palabra"
-    int multiplicador = 0;
+    int multiplicador = 0, tiempo = 0;
 
     char palabra_del_usuario [50]; // La palabra que ingresa el usuario
     char letra_jugador = '\0'; // Si el usuario ingresa una sola letra, guarda aqui para hacer la comparaciones correspondientes
     char abecedario [27] = {0}; // Se usa como registro de las letra que es usuario utiliso
 
-    clock_t inicio, fin; //2 variables de tiempo
-    double tiempo; // una variable de tiempo
 
     for (int i = 0; i < cantidadElementos; i++) { // Inicializa palabra_comparativa, rellenado todo los espacios con 0
         palabra_comparativa[i] = 0;
     }
-
-    cantidad_de_tiempo(eleccion); // Le pasa a al archivo "temporizador_classico.txt"
-
+    
     printf("\n\n");
     printf("    Ingrese su nombre: ");
     scanf("%s", &player_record.nombre); // Guarda el nombre, en la estructura del jugador.
     erase();
 
-    inicio = clock(); // Guarda el tiempo de inicio.
+    cantidad_de_tiempo(eleccion); // Le pasa a al archivo "temporizador_classico.txt"
+    system("mintty -e ./temporizador_classico &"); // Lanzar el segundo programa usando la función system
+
+    FILE *archivo_temporizador_classico;
+    archivo_temporizador_classico = fopen("temporizador_classico.txt", "w");
+    if (!archivo_temporizador_classico) {
+        printf("Error al abrir el archivo.\n");
+    }
+    fprintf(archivo_temporizador_classico, "0");
+    fclose(archivo_temporizador_classico);
+
+
+
 
     do{
         
@@ -650,6 +659,7 @@ void Star_classico(int eleccion) {
         }
         
         printf("    Letras usas: ");
+
         for (int j = 0; j < 27 && abecedario[j] != '\0'; j++)
         {
             printf("%c, ", abecedario[j]);
@@ -697,32 +707,51 @@ void Star_classico(int eleccion) {
         contador++;
     }
 
-    fin = clock(); // Guarda el tiempo al final
-    tiempo = ((double) (fin - inicio)) / CLOCKS_PER_SEC; // Calcula el tiempo transcurrido en segundos
-
-    player_record.puntuacion = puntuacion(eleccion, tiempo); // Guarda la puntuacion, en la estructura del jugador
-
     erase();
 
-
     }  while (contador <= 6 && suma_aciertos > 0);
-    
+
 
     if (contador == 7){
         Perdiste(); //<__________________ programar
     }
     else {
+        archivo_temporizador_classico = fopen("temporizador_classico.txt", "w"); //Abre el archivo en modo escritura
+        if (!archivo_temporizador_classico) {
+            printf("Error al abrir el archivo.\n");
+        }
+        rewind(archivo_temporizador_classico);
+        fprintf(archivo_temporizador_classico, "2"); // Le indica al temporisador que la partida termino
+        fclose(archivo_temporizador_classico);
+
+        printf("\n\nCalculando espere...\n");
+        usleep(3000000);
+
+
+        archivo_temporizador_classico = fopen("temporizador_classico.txt", "r"); //Abre el archivo en modo lectura
+        if (!archivo_temporizador_classico) {
+            printf("Error al abrir el archivo.\n");
+        }
+
+        rewind(archivo_temporizador_classico);
+        fscanf(archivo_temporizador_classico, "%d", &tiempo);
+        printf("\n\nEL TIEMPO QUE SOBRO DEL PROGRAMA ES: %d\n\n", tiempo);
+        fclose(archivo_temporizador_classico);
+
+        player_record.puntuacion = puntuacion(eleccion, tiempo, contador); // Guarda la puntuacion, en la estructura del jugador
+
             for (int k = 0; k < cantidadElementos-1; k++){  //For que se repite tantas veces como letras tenga palabra
             printf("%c ", palabra[k]);
             }
             //<================== poner un mensaje que le diga al usuario que apriente enter para continuar
+
         victoria(); //<__________________ programar
     }
 } 
 
 
-int puntuacion(int eleccion, int tiempo){
-    int multiplicador = 0;
+int puntuacion(int eleccion, int tiempo, int contador){
+    int i_tiempo= 0, k_total =0, multiplicador =0, total =0;
 
     if (eleccion == 3) // elije el tipo de multiplicador, dependiendo de la dificultad
     {
@@ -735,13 +764,442 @@ int puntuacion(int eleccion, int tiempo){
     else{
         multiplicador = 1; // elijio Facil
     }
+
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: 0                                               \033[38;2;251;229;173m|\n");                                                                                  
+    printf("    \033[38;2;251;229;173m|    Errores:                                                \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m"); 
     
+    usleep(500000);
     
-    int puntuacion = tiempo * multiplicador; // calcula la puntuacion, multiplicar con el tiempo restante
+
+    while (i_tiempo < tiempo) {
+    i_tiempo++;
+    if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores:                                                \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores:                                                \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores:                                                \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    } 
+
+
+
+
+
+
+
+
+
+
+    usleep(1200000);
+    if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad:                           \033[38;2;251;229;173m|\n");   
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+
+
+    usleep(1200000);
+    erase();
+    if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);    
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);     
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);  
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error:                                        \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  \033[38;2;251;229;173m|\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+
+
+    usleep(1200000);
+    erase();
+    if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               |\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              |\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         |\n", multiplicador);    
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                         |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  |\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              |\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              |\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         |\n", multiplicador);     
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                        |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  |\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             |\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              |\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         |\n", multiplicador);  
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                       |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL:                                                  |\n");
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+
+
+    usleep(500000);
+    erase();
+    total = (tiempo*multiplicador) - (20*contador); // calcula la puntuacion
+    if (total < 0) // si la puntuacion es negativa es 0
+    {
+    total = 0;
+    if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);    
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                         |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                              \033[38;2;251;229;173m|\n", total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);     
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                        |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                              \033[38;2;251;229;173m|\n", total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);  
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                       |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                              \033[38;2;251;229;173m|\n", total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(20000);
+    }
+    }
+
+    else { // si la puntuacion es positiva, la muestra
+
+    do
+    {
+    k_total++;
+
+    if (k_total <= 9){
+        if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);    
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                         |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                                \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);     
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                        |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                                \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);  
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                       |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                                \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    }
+
+
+
+
+
+    else if (k_total <= 99){
+        if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);    
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                         |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                               \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);     
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                        |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                               \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);  
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                       |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                               \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    }
+
+
+
+
+
+    else{
+
+
+    if (i_tiempo <= 9)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                               \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);    
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                         |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                              \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    else if (i_tiempo <= 99)
+    {
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                              \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);     
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                        |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                              \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(200);
+    }
+    else{
+    erase();
+    printf("\n\n");  
+    printf("    \033[38;2;251;229;173m|============================================================|\n");
+    printf("    \033[38;2;251;229;173m|    =PUNTUACION=                                            |\n");
+    printf("    \033[38;2;251;229;173m|    Tiempo: %d                                             \033[38;2;251;229;173m|\n", i_tiempo);
+    printf("    \033[38;2;251;229;173m|    Errores: %d                                              \033[38;2;251;229;173m|\n", contador);
+    printf("    \033[38;2;251;229;173m|    Multiplicador por dificultad: %d                         \033[38;2;251;229;173m|\n", multiplicador);  
+    printf("    \033[38;2;251;229;173m|    ----------------------------                            |\n");
+    printf("    \033[38;2;251;229;173m|    Resta por error: (%d*%d) - (20*%d)                       |\n", i_tiempo, multiplicador, contador);
+    printf("    \033[38;2;251;229;173m|    TOTAL: %d                                              \033[38;2;251;229;173m|\n", k_total);
+    printf("    \033[38;2;251;229;173m|------------------------------------------------------------|\n\033[0m");
+    usleep(2000);
+    }
+
+    }
+    
+    } while (k_total < total);
+    
+    int puntuacion = total; //la puntuacion
 
     return puntuacion;
-
 }
+}
+
 
 void cantidad_de_tiempo(int eleccion){
     if (eleccion == 3)
@@ -776,7 +1234,6 @@ void cantidad_de_tiempo(int eleccion){
     fclose(archivo_temporizador_classico);
     }
 }
-
 
 void Star_Papa_Caliente(){
     FILE *archivo;
